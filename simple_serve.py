@@ -11,7 +11,7 @@ meshlab_script = """<!DOCTYPE FilterScript>
  <filter name="Transform: Rotate">
   <Param enum_val0="X axis" enum_val1="Y axis" enum_cardinality="4" enum_val2="Z axis" enum_val3="custom axis" type="RichEnum" value="0" name="rotAxis"/>
   <Param enum_val0="origin" enum_val1="barycenter" enum_cardinality="3" enum_val2="custom point" type="RichEnum" value="1" name="rotCenter"/>
-  <Param type="RichDynamicFloat" value="180" min="-360" name="angle" max="360"/>
+  <Param type="RichDynamicFloat" value="0" min="-360" name="angle" max="360"/>
   <Param type="RichBool" value="false" name="snapFlag"/>
   <Param x="0" y="0" z="0" type="RichPoint3f" name="customAxis"/>
   <Param x="0" y="0" z="0" type="RichPoint3f" name="customCenter"/>
