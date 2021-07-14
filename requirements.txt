@@ -2,3 +2,6 @@ bpy
 pycortex
 flask
 zipfile
+pymeshalb
+plyfile
+autograd

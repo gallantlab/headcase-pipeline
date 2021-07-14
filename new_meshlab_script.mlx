@@ -1,0 +1,72 @@
+<!DOCTYPE FilterScript>
+<FilterScript>
+ <filter name="Transform: Translate Camera or set of cameras">
+  <Param enum_val1="Mesh Camera" value="1" name="camera" description="Camera type" enum_val0="Raster Camera" tooltip="Choose the camera to scale" enum_cardinality="2" type="RichEnum"/>
+  <Param max="1000" value="0" name="axisX" description="X Axis" min="-1000" tooltip="Absolute translation amount along the X axis" type="RichDynamicFloat"/>
+  <Param max="1000" value="0" name="axisY" description="Y Axis" min="-1000" tooltip="Absolute translation amount along the Y axis" type="RichDynamicFloat"/>
+  <Param max="1000" value="0" name="axisZ" description="Z Axis" min="-1000" tooltip="Absolute translation amount along the Z axis" type="RichDynamicFloat"/>
+  <Param value="true" name="centerFlag" description="translate viewpoint position to the origin" tooltip="If selected, the camera viewpoint is translated to the origin" type="RichBool"/>
+  <Param value="false" name="toallRaster" description="Apply to all active Raster layers" tooltip="Apply the same scaling to all the active Raster layers: it is taken into account only if 'Raster Camera' is selected" type="RichBool"/>
+  <Param value="false" name="toall" description="Apply to all active Raster and Mesh layers" tooltip="Apply the same scaling to all the layers, including any visible 3D layer" type="RichBool"/>
+ </filter>
+ <filter name="Transform: Rotate">
+  <Param enum_val1="Y axis" enum_val3="custom axis" enum_val2="Z axis" value="0" name="rotAxis" description="Rotation on:" enum_val0="X axis" tooltip="Choose a method" enum_cardinality="4" type="RichEnum"/>
+  <Param enum_val1="barycenter" enum_val2="custom point" value="1" name="rotCenter" description="Center of rotation:" enum_val0="origin" tooltip="Choose a method" enum_cardinality="3" type="RichEnum"/>
+  <Param max="360" value="0" name="angle" description="Rotation Angle" min="-360" tooltip="Angle of rotation (in &lt;b>degree&lt;/b>). If snapping is enabled this value is rounded according to the snap value" type="RichDynamicFloat"/>
+  <Param name="customAxis" description="Custom axis" tooltip="This rotation axis is used only if the 'custom axis' option is chosen." y="0" type="RichPoint3f" z="0" x="0"/>
+  <Param name="customCenter" description="Custom center" tooltip="This rotation center is used only if the 'custom point' option is chosen." y="0" type="RichPoint3f" z="0" x="0"/>
+  <Param value="false" name="snapFlag" description="Snap angle" tooltip="If selected, before starting the filter will remove any unreferenced vertex (for which curvature values are not defined)" type="RichBool"/>
+  <Param value="30" name="snapAngle" description="Snapping Value" tooltip="This value is used to snap the rotation angle (i.e. if the snapping value is 30, 227 becomes 210)." type="RichFloat"/>
+  <Param value="true" name="Freeze" description="Freeze Matrix" tooltip="The transformation is explicitly applied, and the vertex coordinates are actually changed" type="RichBool"/>
+  <Param value="false" name="allLayers" description="Apply to all visible Layers" tooltip="If selected the filter will be applied to all visible mesh layers" type="RichBool"/>
+ </filter>
+ <filter name="Transform: Scale, Normalize">
+  <Param value="1000" name="axisX" description="X Axis" tooltip="Scaling" type="RichFloat"/>
+  <Param value="1" name="axisY" description="Y Axis" tooltip="Scaling" type="RichFloat"/>
+  <Param value="1" name="axisZ" description="Z Axis" tooltip="Scaling" type="RichFloat"/>
+  <Param value="true" name="uniformFlag" description="Uniform Scaling" tooltip="If selected an uniform scaling (the same for all the three axis) is applied (the X axis value is used)" type="RichBool"/>
+  <Param enum_val1="barycenter" enum_val2="custom point" value="1" name="scaleCenter" description="Center of scaling:" enum_val0="origin" tooltip="Choose a method" enum_cardinality="3" type="RichEnum"/>
+  <Param name="customCenter" description="Custom center" tooltip="This scaling center is used only if the 'custom point' option is chosen." y="0" type="RichPoint3f" z="0" x="0"/>
+  <Param value="false" name="unitFlag" description="Scale to Unit bbox" tooltip="If selected, the object is scaled to a box whose sides are at most 1 unit length" type="RichBool"/>
+  <Param value="true" name="Freeze" description="Freeze Matrix" tooltip="The transformation is explicitly applied, and the vertex coordinates are actually changed" type="RichBool"/>
+  <Param value="false" name="allLayers" description="Apply to all visible Layers" tooltip="If selected the filter will be applied to all visible mesh layers" type="RichBool"/>
+ </filter>
+ <filter name="Merge Close Vertices">
+  <Param max="5.3927" value="0.5" name="Threshold" description="Merging distance" min="0" tooltip="All the vertices that closer than this threshold are merged together. Use very small values, default values is 1/10000 of bounding box diagonal. " type="RichAbsPerc"/>
+ </filter>
+ <filter name="Remove Isolated pieces (wrt Diameter)">
+  <Param max="539.27" value="150" name="MinComponentDiag" description="Enter max diameter of isolated pieces" min="0" tooltip="Delete all the connected components (floating pieces) with a diameter smaller than the specified one" type="RichAbsPerc"/>
+  <Param value="false" name="removeUnref" description="Remove unfreferenced vertices" tooltip="if true, the unreferenced vertices remaining after the face deletion are removed." type="RichBool"/>
+ </filter>
+ <filter name="Repair non Manifold Edges by removing faces"/>
+ <filter name="Close Holes">
+  <Param value="100" name="MaxHoleSize" description="Max size to be closed " tooltip="The size is expressed as number of edges composing the hole boundary" type="RichInt"/>
+  <Param value="false" name="Selected" description="Close holes with selected faces" tooltip="Only the holes with at least one of the boundary faces selected are closed" type="RichBool"/>
+  <Param value="false" name="NewFaceSelected" description="Select the newly created faces" tooltip="After closing a hole the faces that have been created are left selected. Any previous selection is lost. Useful for example for smoothing the newly created holes." type="RichBool"/>
+  <Param value="true" name="SelfIntersection" description="Prevent creation of selfIntersecting faces" tooltip="When closing an holes it tries to prevent the creation of faces that intersect faces adjacent to the boundary of the hole. It is an heuristic, non intersetcting hole filling can be NP-complete." type="RichBool"/>
+ </filter>
+ <filter name="Surface Reconstruction: Screened Poisson">
+  <Param value="false" name="visibleLayer" description="Merge all visible layers" tooltip="Enabling this flag means that all the visible layers will be used for providing the points." type="RichBool"/>
+  <Param value="4" name="depth" description="Reconstruction Depth" tooltip="This integer is the maximum depth of the tree that will be used for surface reconstruction. Running at depth d corresponds to solving on a voxel grid whose resolution is no larger than 2^d x 2^d x 2^d. Note that since the reconstructor adapts the octree to the sampling density, the specified reconstruction depth is only an upper bound. The default value for this parameter is 8." type="RichInt"/>
+  <Param value="11" name="fullDepth" description="Adaptive Octree Depth" tooltip="This integer specifies the depth beyond depth the octree will be adapted. At coarser depths, the octree will be complete, containing all 2^d x 2^d x 2^d nodes. The default value for this parameter is 5." type="RichInt"/>
+  <Param value="0" name="cgDepth" description="Conjugate Gradients Depth" tooltip="This integer is the depth up to which a conjugate-gradients solver will be used to solve the linear system. Beyond this depth Gauss-Seidel relaxation will be used. The default value for this parameter is 0." type="RichInt"/>
+  <Param value="1.1" name="scale" description="Scale Factor" tooltip="This floating point value specifies the ratio between the diameter of the cube used for reconstruction and the diameter of the samples' bounding cube. The default value is 1.1." type="RichFloat"/>
+  <Param value="1" name="samplesPerNode" description="Minimum Number of Samples" tooltip="This floating point value specifies the minimum number of sample points that should fall within an octree node as the octree construction is adapted to sampling density. For noise-free samples, small values in the range [1.0 - 5.0] can be used. For more noisy samples, larger values in the range [15.0 - 20.0] may be needed to provide a smoother, noise-reduced, reconstruction. The default value is 1.5." type="RichFloat"/>
+  <Param value="4" name="pointWeight" description="Interpolation Weight" tooltip="This floating point value specifies the importants that interpolation of the point samples is given in the formulation of the screened Poisson equation. The results of the original (unscreened) Poisson Reconstruction can be obtained by setting this value to 0. The default value for this parameter is 4." type="RichFloat"/>
+  <Param value="8" name="iters" description="Gauss-Seidel Relaxations" tooltip="This integer value specifies the number of Gauss-Seidel relaxations to be performed at each level of the hierarchy. The default value for this parameter is 8." type="RichInt"/>
+  <Param value="false" name="confidence" description="Confidence Flag" tooltip="Enabling this flag tells the reconstructor to use the quality as confidence information; this is done by scaling the unit normals with the quality values. When the flag is not enabled, all normals are normalized to have unit-length prior to reconstruction." type="RichBool"/>
+  <Param value="true" name="preClean" description="Pre-Clean" tooltip="Enabling this flag force a cleaning pre-pass on the data removing all unreferenced vertices or vertices with null normals." type="RichBool"/>
+ </filter>
+ <filter name="Vertex Attribute Transfer">
+  <Param value="0" name="SourceMesh" description="Source Mesh" tooltip="The mesh that contains the source data that we want to transfer." type="RichMesh"/>
+  <Param value="1" name="TargetMesh" description="Target Mesh" tooltip="The mesh whose vertices will receive the data from the source." type="RichMesh"/>
+  <Param value="true" name="GeomTransfer" description="Transfer Geometry" tooltip="if enabled, the position of each vertex of the target mesh will be snapped onto the corresponding closest point on the source mesh" type="RichBool"/>
+  <Param value="false" name="NormalTransfer" description="Transfer Normal" tooltip="if enabled, the normal of each vertex of the target mesh will get the (interpolated) normal of the corresponding closest point on the source mesh" type="RichBool"/>
+  <Param value="false" name="ColorTransfer" description="Transfer Color" tooltip="if enabled, the color of each vertex of the target mesh will become the color of the corresponding closest point on the source mesh" type="RichBool"/>
+  <Param value="false" name="QualityTransfer" description="Transfer quality" tooltip="if enabled, the quality of each vertex of the target mesh will become the quality of the corresponding closest point on the source mesh" type="RichBool"/>
+  <Param value="false" name="SelectionTransfer" description="Transfer Selection" tooltip="if enabled,  each vertex of the target mesh will be selected if the corresponding closest point on the source mesh falls in a selected face" type="RichBool"/>
+  <Param value="false" name="QualityDistance" description="Store dist. as quality" tooltip="if enabled, we store the distance of the transferred value as in the vertex quality" type="RichBool"/>
+  <Param max="557.581" value="8.631" name="UpperBound" description="Max Dist Search" min="0" tooltip="Sample points for which we do not find anything within this distance are rejected and not considered for recovering attributes." type="RichAbsPerc"/>
+  <Param value="false" name="onSelected" description="Only on selection" tooltip="If checked, only transfer to selected vertices on TARGET mesh" type="RichBool"/>
+ </filter>
+</FilterScript>
