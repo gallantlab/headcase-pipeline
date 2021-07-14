@@ -4,13 +4,20 @@ ms = pymeshlab.MeshSet()
 ms.load_new_mesh("Model.obj")
 
 # "Transform: Move, Translate, Center"
-ms.apply_filter(filter_name="transform_translate_camera_or_set_of_cameras",
-	camera="Mesh Camera",
-	# axisX=0,
-	# axisY=0,
-	# axisZ=0,
-	centerflag=True,
-	# toall=False,
+# ms.apply_filter(filter_name="transform_translate_camera_or_set_of_cameras",
+# 	camera="Mesh Camera",
+# 	# axisX=0,
+# 	# axisY=0,
+# 	# axisZ=0,
+# 	centerflag=True,
+# 	# toall=False,
+# 	)
+ms.apply_filter(filter_name="transform_translate_center_set_origin",
+	# axisx=0,
+	# axisy=0,
+	# axisz=0,
+	# freeze=True,
+	# alllayers=False,
 	)
 
 # "Transform: Rotate"

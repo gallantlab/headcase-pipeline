@@ -5,7 +5,7 @@ from bpy import context as C
 from bpy import data as D
 import os.path
 
-bpy.context.scene.objects.active = bpy.data.objects['Cube']
+bpy.context.view_layer.objects.active = bpy.data.objects['Cube']
 bpy.ops.object.delete()
 
 def readstl(path, name):
@@ -17,7 +17,7 @@ readstl('{preview}', 'preview')
 readstl('{scan}', 'scan')
 
 bpy.ops.object.select_all(action='DESELECT')
-bpy.context.scene.objects.active = bpy.data.objects['scan']
+bpy.context.view_layer.objects.active = bpy.data.objects['scan']
 bpy.ops.object.mode_set(mode = 'EDIT')
 bpy.ops.mesh.select_all(action='SELECT')
 for _ in range(3):
@@ -34,7 +34,7 @@ bpy.ops.object.mode_set(mode = 'OBJECT')
 try:
 		readstl('{customizations}', 'customizations')
 		bpy.ops.object.select_all(action='DESELECT')
-		bpy.context.scene.objects.active = bpy.data.objects['scan']
+		bpy.context.view_layer.objects.active = bpy.data.objects['scan']
 		bpy.ops.object.modifier_add(type='BOOLEAN')
 		bpy.data.objects['scan'].modifiers['Boolean'].name = 'Customizations'
 		bpy.data.objects['scan'].modifiers['Customizations'].operation = 'UNION'
@@ -44,7 +44,7 @@ except:
 		pass
 
 bpy.ops.object.select_all(action='DESELECT')
-bpy.context.scene.objects.active = bpy.data.objects['preview']
+bpy.context.view_layer.objects.active = bpy.data.objects['preview']
 bpy.ops.object.modifier_add(type='BOOLEAN')
 bpy.data.objects['preview'].modifiers['Boolean'].name = 'scan'
 bpy.data.objects['preview'].modifiers['scan'].operation = 'DIFFERENCE'
@@ -55,7 +55,7 @@ def intersect_cube(name, loc):
 		bpy.ops.object.select_all(action='DESELECT')
 		bpy.ops.mesh.primitive_cube_add(radius=99.9, location=loc)
 		bpy.data.objects['Cube'].name = name
-		bpy.context.scene.objects.active = bpy.data.objects[name]
+		bpy.context.view_layer.objects.active = bpy.data.objects[name]
 		bpy.ops.object.modifier_add(type='BOOLEAN')
 		bpy.data.objects[name].modifiers['Boolean'].name = 'case'
 		bpy.data.objects[name].modifiers['case'].operation = 'INTERSECT'
@@ -101,48 +101,20 @@ def _call_blender(code):
 				sp.call(shlex.split(cmd))
 
 
-# def model_clean(infile, outfile):
-# 		with Temp(mode='w') as script:
-# 				path = mkdtemp()
-# 				pkg = zipfile.ZipFile(infile)
-# 				pkg.extractall(path)
-# 				pkg.close()
-# 				print(path)
-
-# 				# script.write(meshlab_script)
-# 				# script.flush()
-				
-# 				# cmd = "meshlabserver -i {infile} -o {temp} -s {ms} -om vc"
-# 				# infile = os.path.join(path, "Model.obj")
-# 				# call = shlex.split(cmd.format(infile=infile, temp=outfile, ms=script.name))
-# 				# sp.call(call, cwd=path)
-
-# 				# infile = "Model.obj"
-# 				# ms = pymeshlab.MeshSet()
-# 				# ms.load_new_mesh(infile)
-# 				# ms.load_filter_script("meshlab_script.mlx")
-# 				# ms.apply_filter_script()
-# 				# ms.save_current_mesh(outfile)
-				
-# 				shutil.rmtree(path)
-
 def model_clean(infile, outfile):
-    with Temp(suffix='.mlx', mode='w') as script:
-        path = mkdtemp()
-        pkg = zipfile.ZipFile(infile)
-        pkg.extractall(path)
-        pkg.close()
+		path = mkdtemp()
+		pkg = zipfile.ZipFile(infile)
+		pkg.extractall(path)
+		pkg.close()
 
-        # script.write(meshlab_script)
-        # script.flush()
-        
-        cmd = "meshlabserver -i {infile} -o {temp} -s {ms} -om vc"
-        infile = os.path.join(path, "Model.obj")
-        call = shlex.split(cmd.format(infile=infile, temp=outfile, ms="new_meshlab_script.mlx"))
-        sp.call(call)
-        
-        shutil.rmtree(path)
-        print("clean done!")
+		infile = os.path.join(path, "Model.obj")
+		ms = pymeshlab.MeshSet()
+		ms.load_new_mesh(infile)
+		ms.load_filter_script("new_meshlab_script.mlx")
+		ms.apply_filter_script()
+		ms.save_current_mesh(outfile)
+		
+		shutil.rmtree(path)
 
 
 def align_scan(infile, outfile):
@@ -179,12 +151,9 @@ def gen_case(scanfile, outfile, casetype="s32"):
 
 def pipeline(infile, outfile, **kwargs):
 		with Temp(suffix='.ply') as cleaned, Temp(suffix='.stl') as aligned:
-			ff = "clean.ply"
-			with open(ff, 'wb') as f:
-				pass
-			model_clean(infile, ff)
-			# align_scan(ff, aligned.name)
-			# gen_case(aligned.name, outfile, **kwargs)
+			model_clean(infile, cleaned.name)
+			align_scan(cleaned.name, aligned.name)
+			gen_case(aligned.name, outfile, **kwargs)
 
 
 
@@ -203,39 +172,3 @@ if __name__ == "__main__":
 		raise
 	pipeline(infile, outfile, casetype=casetype)
 	
-
-
-# from flask import Flask
-# from flask import request, make_response
-# app = Flask(__name__)
-
-# @app.route('/')
-# def main():
-#     return """<!doctype html>
-# <title>Headcase generator</title>
-# <form action="/upload" method="post" enctype="multipart/form-data">
-#     <label for="casetype">Headcoil:</label>
-#     <select id="casetype" name="casetype">
-#         <option value="s32">Siemens 32ch</option>
-#         <option value="s64">Siemens 64ch</option>
-#         <option value="n32">Nova 32ch</option>
-#     </select>
-#     <br/>
-#     <label for="scanfile">Scan:</label>
-#     <input id="scanfile" type="file" name="scanfile">
-#     <br/>
-#     <input type="submit">
-# </form>"""
-
-# @app.route('/upload', methods=['POST'])
-# def upload():
-#     with Temp(suffix='.zip') as outfile:
-#         pipeline(request.files['scanfile'], outfile.name, casetype=request.form['casetype'])
-#         resp = make_response(outfile.read())
-#         resp.headers['Content-Disposition'] = "attachment; filename=case.zip"
-#         resp.headers['Content-Type'] = 'application/zip'
-#         return resp
-
-
-# if __name__ == '__main__':
-#    app.run(debug = True, host='0.0.0.0')
