@@ -1,0 +1,10 @@
+# __py__cache
+*/__pycache__/
+# zip, obj, ply file
+*.zip
+*.obj
+*.ply
+*.mlx
+
+# temp folder
+temp/

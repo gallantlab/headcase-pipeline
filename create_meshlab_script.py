@@ -4,14 +4,6 @@ ms = pymeshlab.MeshSet()
 ms.load_new_mesh("Model.obj")
 
 # "Transform: Move, Translate, Center"
-# ms.apply_filter(filter_name="transform_translate_camera_or_set_of_cameras",
-# 	camera="Mesh Camera",
-# 	# axisX=0,
-# 	# axisY=0,
-# 	# axisZ=0,
-# 	centerflag=True,
-# 	# toall=False,
-# 	)
 ms.apply_filter(filter_name="transform_translate_center_set_origin",
 	# axisx=0,
 	# axisy=0,
@@ -24,7 +16,7 @@ ms.apply_filter(filter_name="transform_translate_center_set_origin",
 ms.apply_filter(filter_name="transform_rotate",
 	rotaxis="X axis",
 	rotcenter="barycenter",
-	# angle=0,
+	angle=180,
 	# snapflag=False,
 	# customAxis=[0, 0, 0],
 	# customcenter=[0, 0, 0],
@@ -54,7 +46,7 @@ ms.apply_filter(filter_name="merge_close_vertices",
 # "Remove Isolated pieces (wrt Diameter)"
 ms.apply_filter(filter_name="remove_isolated_pieces_wrt_diameter",
 	mincomponentdiag=150,
-	removeunref=False, 
+	removeunref=False,
 	)
 
 # "Remove Faces from Non Manifold Edges"
@@ -71,12 +63,12 @@ ms.apply_filter(filter_name="close_holes",
 # "Surface Reconstruction: Poisson"
 ms.apply_filter(filter_name="surface_reconstruction_screened_poisson",
 	# visiblelayer=False,
-	depth=4,
-	fulldepth=11, #Octree Depth
-	# cgdepth=0,
+	depth=5,
+	fulldepth=5, #Octree Depth
+	cgdepth=6,
 	# scale=1.1,
 	samplespernode=1,
-	# pointweight=4,
+	pointweight=0,
 	# iters=8,
 	# confidence=False,
 	preclean=True,

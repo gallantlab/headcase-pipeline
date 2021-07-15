@@ -88,6 +88,7 @@ import shlex
 import shutil
 import subprocess as sp
 import pymeshlab
+import argparse
 
 def _call_blender(code):
 		"""Call blender, while running the given code. If the filename doesn't exist, save a new file in that location.
@@ -100,6 +101,52 @@ def _call_blender(code):
 				tf.flush()
 				sp.call(shlex.split(cmd))
 
+def meshlab_filter(ms):
+	# "Transform: Move, Translate, Center"
+	ms.apply_filter(filter_name="transform_translate_center_set_origin")
+	# "Transform: Rotate"
+	ms.apply_filter(filter_name="transform_rotate",
+		rotaxis="X axis",
+		rotcenter="barycenter",
+		angle=180)
+	# "Transform: Scale"
+	ms.apply_filter(filter_name="transform_scale_normalize",
+		axisx=1000,
+		scalecenter="barycenter",
+		unitflag=False)
+	# "Merge Close Vertices"
+	ms.apply_filter(filter_name="merge_close_vertices",
+		threshold=0.5)
+	# "Remove Isolated pieces (wrt Diameter)"
+	ms.apply_filter(filter_name="remove_isolated_pieces_wrt_diameter",
+		mincomponentdiag=150,
+		removeunref=False,
+		)
+	# "Remove Faces from Non Manifold Edges"
+	ms.apply_filter(filter_name="repair_non_manifold_edges_by_removing_faces")
+	# "Close Holes"
+	ms.apply_filter(filter_name="close_holes",
+		maxholesize=100,
+		newfaceselected=False,
+		)
+	# "Surface Reconstruction: Poisson"
+	ms.apply_filter(filter_name="surface_reconstruction_screened_poisson",
+		depth=7,
+		fulldepth=2,
+		samplespernode=1,
+		# pointweight=0,
+		preclean=True,
+		)
+	# "Vertex Attribute Transfer"
+	ms.apply_filter(filter_name="vertex_attribute_transfer",
+		sourcemesh=0,
+		targetmesh=1,
+		geomtransfer=True,
+		colortransfer=False,
+		upperbound=8.631,
+		)
+	return ms
+
 
 def model_clean(infile, outfile):
 		path = mkdtemp()
@@ -110,8 +157,7 @@ def model_clean(infile, outfile):
 		infile = os.path.join(path, "Model.obj")
 		ms = pymeshlab.MeshSet()
 		ms.load_new_mesh(infile)
-		ms.load_filter_script("new_meshlab_script.mlx")
-		ms.apply_filter_script()
+		ms = meshlab_filter(ms)
 		ms.save_current_mesh(outfile)
 		
 		shutil.rmtree(path)
@@ -151,23 +197,27 @@ def gen_case(scanfile, outfile, casetype="s32"):
 
 def pipeline(infile, outfile, **kwargs):
 		with Temp(suffix='.ply') as cleaned, Temp(suffix='.stl') as aligned:
+			print(cleaned.name, aligned.name)
 			model_clean(infile, cleaned.name)
 			align_scan(cleaned.name, aligned.name)
-			gen_case(aligned.name, outfile, **kwargs)
+			# gen_case(aligned.name, outfile, **kwargs)
 
+			if not os.path.isdir('temp/'):
+				os.mkdir('temp')
+			shutil.copyfile(cleaned.name, 'temp/cleaned.ply')
+			shutil.copyfile(aligned.name, 'temp/aligned.stl')
 
 
 if __name__ == "__main__":
-	infile = input("Scan: ")
-	outfile = input("Save: ")
-	casetype_idx = input("Casetype: (1)s32, (2)s64, (3)n32")
-	if casetype_idx == "1":
-		casetype = 's32'
-	elif casetype_idx == "2":
-		casetype = 's64'
-	elif casetype_idx == "3":
-		casetype = 'n32'
-	else:
+	parser = argparse.ArgumentParser(description="load zip object and output zip object")
+	parser.add_argument('-i', dest='infile', type=str, default="Model.zip", help="input object filename (*.zip)")
+	parser.add_argument('-o', dest='outfile', type=str, default="Output.zip", help="output object filename (*.zip)")
+	parser.add_argument('-c', dest='casetype', type=str, default="s64", help="Casetype: [s32, s64, n32]")
+	args = parser.parse_args()
+	infile = args.infile
+	outfile = args.outfile
+	casetype = args.casetype
+	if casetype not in ['s32', 's64', 'n32']:
 		print("Invalid casetype")
 		raise
 	pipeline(infile, outfile, casetype=casetype)
