@@ -2,3 +2,5 @@ bpy
 pycortex
 flask
 zipfile
+autograd
+plyfile
