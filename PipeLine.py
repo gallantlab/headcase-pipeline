@@ -109,15 +109,10 @@ def meshlab_filter(ms):
 		axisz=-0.135)
 	# "Transform: Rotate"
 	ms.apply_filter(filter_name="transform_rotate",
-		rotaxis="X axis",
+		rotaxis="Z axis",
 		rotcenter="barycenter",
 		angle=180,
 		)
-	ms.apply_filter(filter_name="transform_rotate",
-		rotaxis="Y axis",
-		rotcenter="barycenter",
-		angle=210)
-	# "Transform: Scale"
 	ms.apply_filter(filter_name="transform_scale_normalize",
 		axisx=1000,
 		scalecenter="barycenter",
@@ -139,7 +134,7 @@ def meshlab_filter(ms):
 		)
 	# "Surface Reconstruction: Poisson"
 	ms.apply_filter(filter_name="surface_reconstruction_screened_poisson",
-		depth=7,#11
+		depth=11,
 		fulldepth=2,
 		samplespernode=1,
 		# pointweight=0,
@@ -147,8 +142,8 @@ def meshlab_filter(ms):
 		)
 	# "Vertex Attribute Transfer"
 	ms.apply_filter(filter_name="vertex_attribute_transfer",
-		sourcemesh=0,
-		targetmesh=1,
+		sourcemesh=1,
+		targetmesh=0,
 		geomtransfer=True,
 		colortransfer=False,
 		upperbound=8.631,
@@ -207,13 +202,12 @@ def pipeline(infile, outfile, **kwargs):
 		with Temp(suffix='.ply') as cleaned, Temp(suffix='.stl') as aligned:
 			print(cleaned.name, aligned.name)
 			model_clean(infile, cleaned.name)
-			shutil.copyfile(cleaned.name, 'temp/cleaned.ply')
 			align_scan(cleaned.name, aligned.name)
-			# # gen_case(aligned.name, outfile, **kwargs)
+			gen_case(aligned.name, outfile, **kwargs)
 
 			if not os.path.isdir('temp/'):
 				os.mkdir('temp')
-			# shutil.copyfile(cleaned.name, 'temp/cleaned.ply')
+			shutil.copyfile(cleaned.name, 'temp/cleaned.ply')
 			shutil.copyfile(aligned.name, 'temp/aligned.stl')
 
 

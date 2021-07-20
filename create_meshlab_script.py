@@ -63,9 +63,9 @@ ms.apply_filter(filter_name="close_holes",
 # "Surface Reconstruction: Poisson"
 ms.apply_filter(filter_name="surface_reconstruction_screened_poisson",
 	# visiblelayer=False,
-	depth=5,
-	fulldepth=5, #Octree Depth
-	cgdepth=6,
+	depth=11,
+	fulldepth=2,
+	# cgdepth=0,
 	# scale=1.1,
 	samplespernode=1,
 	pointweight=0,
@@ -76,8 +76,8 @@ ms.apply_filter(filter_name="surface_reconstruction_screened_poisson",
 
 # "Vertex Attribute Transfer"
 ms.apply_filter(filter_name="vertex_attribute_transfer",
-	sourcemesh=0,
-	targetmesh=1,
+	sourcemesh=1,
+	targetmesh=0,
 	geomtransfer=True,
 	# normaltransfer=False,
 	colortransfer=False,
