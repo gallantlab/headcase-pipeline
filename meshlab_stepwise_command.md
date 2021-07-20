@@ -60,6 +60,10 @@
 
 	![step7_res](./explanatory_ims/step7_res.png)
 
+* [meshlab function surface_poisson](https://github.com/3DLIRIOUS/MeshLabXML/blob/ba2c13ba7cd785b94add9b95bf33414c7099be70/meshlabxml/remesh.py#L294)
+
 8. Vertex Attribute Transfer 
 
-	![step8](step8_vertexAttributeTransfer.png)
+	![step8](./explanatory_ims/step8_vertexAttributeTransfer.png)
+
+* [meshlab function vert_attr_2_meshes](https://github.com/3DLIRIOUS/MeshLabXML/blob/ba2c13ba7cd785b94add9b95bf33414c7099be70/meshlabxml/transfer.py#L120)
