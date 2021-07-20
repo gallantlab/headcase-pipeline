@@ -1,6 +1,6 @@
 ## Stepwise model clean implemented in meshlab
 
-1. Transform: Move, Translate, and center
+1. [Transform: Move, Translate, and center](https://github.com/gallantlab/caseforge-pipeline/blob/master/simple_serve.py#L3)
 
 	![step1](./explanatory_ims/step1_moveTranslateCenter.png)
 
@@ -10,15 +10,15 @@
 
 * [meshlab function translate2](https://github.com/3DLIRIOUS/MeshLabXML/blob/ba2c13ba7cd785b94add9b95bf33414c7099be70/meshlabxml/transform.py#L11)
 
-2. Transform: Rotate
+2. [Transform: Rotate](https://github.com/gallantlab/caseforge-pipeline/blob/master/simple_serve.py#L11)
 
 	![step2](./explanatory_ims/step2_rotate.png)
 
-* (LG tested no rotated was implemented, as value is set to 0)
+* (LG think no rotated was implemented, as angle of rotation is set to 0)
 
 * [meshlab function rotate2](https://github.com/3DLIRIOUS/MeshLabXML/blob/ba2c13ba7cd785b94add9b95bf33414c7099be70/meshlabxml/transform.py#L85)
 
-3. Transform: Scale
+3. [Transform: Scale](https://github.com/gallantlab/caseforge-pipeline/blob/master/simple_serve.py#L22)
 
 	![step3](./explanatory_ims/step3_scale.png)
 
@@ -26,7 +26,7 @@
 
 * [meshlab function scale2](https://github.com/3DLIRIOUS/MeshLabXML/blob/ba2c13ba7cd785b94add9b95bf33414c7099be70/meshlabxml/transform.py#L223)
 
-4. Merge Close Vertex
+4. [Merge Close Vertex](https://github.com/gallantlab/caseforge-pipeline/blob/master/simple_serve.py#L33)
 
 	![step4](./explanatory_ims/step4_mergeVertex.png)
 
@@ -34,7 +34,7 @@
 
 * [meshlab function merge_vert](https://github.com/3DLIRIOUS/MeshLabXML/blob/ba2c13ba7cd785b94add9b95bf33414c7099be70/meshlabxml/clean.py#L8)
 
-5. Remove Isolated Pieces
+5. [Remove Isolated Pieces](https://github.com/gallantlab/caseforge-pipeline/blob/master/simple_serve.py#L36)
 
 	![step5](./explanatory_ims/step5_removeIsolatePieces.png)
 
@@ -42,7 +42,7 @@
 
 	![step5_before](./explanatory_ims/step5_before.png)  ![step5_after](./explanatory_ims/step5_after.png)
 
-6. Close holes: (aka. Remove Faces from Non Manifold Edges)
+6. [Close holes: (aka. Remove Faces from Non Manifold Edges)](https://github.com/gallantlab/caseforge-pipeline/blob/master/simple_serve.py#L39)
 
 	![step6](./explanatory_ims/step6_closeHoles.png)
 
@@ -52,7 +52,7 @@
 
 * [meshlab function close_holes](https://github.com/3DLIRIOUS/MeshLabXML/blob/ba2c13ba7cd785b94add9b95bf33414c7099be70/meshlabxml/clean.py#L40)
 
-7. Surface Reconstruction using Poisson
+7. [Surface Reconstruction using Poisson](https://github.com/gallantlab/caseforge-pipeline/blob/master/simple_serve.py#L46)
 
 	![step7](./explanatory_ims/step7_surfaceReconstructionPoisson.png)
 
@@ -62,7 +62,7 @@
 
 * [meshlab function surface_poisson](https://github.com/3DLIRIOUS/MeshLabXML/blob/ba2c13ba7cd785b94add9b95bf33414c7099be70/meshlabxml/remesh.py#L294)
 
-8. Vertex Attribute Transfer 
+8. [Vertex Attribute Transfer](https://github.com/gallantlab/caseforge-pipeline/blob/master/simple_serve.py#L52) 
 
 	![step8](./explanatory_ims/step8_vertexAttributeTransfer.png)
 
