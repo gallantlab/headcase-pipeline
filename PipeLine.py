@@ -103,12 +103,20 @@ def _call_blender(code):
 
 def meshlab_filter(ms):
 	# "Transform: Move, Translate, Center"
-	ms.apply_filter(filter_name="transform_translate_center_set_origin")
+	ms.apply_filter(filter_name="transform_translate_center_set_origin",
+		axisx=-0.18,
+		axisy=-0.2,
+		axisz=-0.135)
 	# "Transform: Rotate"
 	ms.apply_filter(filter_name="transform_rotate",
 		rotaxis="X axis",
 		rotcenter="barycenter",
-		angle=180)
+		angle=180,
+		)
+	ms.apply_filter(filter_name="transform_rotate",
+		rotaxis="Y axis",
+		rotcenter="barycenter",
+		angle=210)
 	# "Transform: Scale"
 	ms.apply_filter(filter_name="transform_scale_normalize",
 		axisx=1000,
@@ -131,7 +139,7 @@ def meshlab_filter(ms):
 		)
 	# "Surface Reconstruction: Poisson"
 	ms.apply_filter(filter_name="surface_reconstruction_screened_poisson",
-		depth=7,
+		depth=7,#11
 		fulldepth=2,
 		samplespernode=1,
 		# pointweight=0,
@@ -199,12 +207,13 @@ def pipeline(infile, outfile, **kwargs):
 		with Temp(suffix='.ply') as cleaned, Temp(suffix='.stl') as aligned:
 			print(cleaned.name, aligned.name)
 			model_clean(infile, cleaned.name)
+			shutil.copyfile(cleaned.name, 'temp/cleaned.ply')
 			align_scan(cleaned.name, aligned.name)
-			# gen_case(aligned.name, outfile, **kwargs)
+			# # gen_case(aligned.name, outfile, **kwargs)
 
 			if not os.path.isdir('temp/'):
 				os.mkdir('temp')
-			shutil.copyfile(cleaned.name, 'temp/cleaned.ply')
+			# shutil.copyfile(cleaned.name, 'temp/cleaned.ply')
 			shutil.copyfile(aligned.name, 'temp/aligned.stl')
 
 
