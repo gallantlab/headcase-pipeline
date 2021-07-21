@@ -5,7 +5,7 @@ from bpy import context as C
 from bpy import data as D
 import os.path
 
-bpy.context.view_layer.objects.active = bpy.data.objects['Cube']
+bpy.context.scene.objects.active = bpy.data.objects['Cube']
 bpy.ops.object.delete()
 
 def readstl(path, name):
@@ -17,7 +17,7 @@ readstl('{preview}', 'preview')
 readstl('{scan}', 'scan')
 
 bpy.ops.object.select_all(action='DESELECT')
-bpy.context.view_layer.objects.active = bpy.data.objects['scan']
+bpy.context.scene.objects.active = bpy.data.objects['scan']
 bpy.ops.object.mode_set(mode = 'EDIT')
 bpy.ops.mesh.select_all(action='SELECT')
 for _ in range(3):
@@ -34,7 +34,7 @@ bpy.ops.object.mode_set(mode = 'OBJECT')
 try:
 		readstl('{customizations}', 'customizations')
 		bpy.ops.object.select_all(action='DESELECT')
-		bpy.context.view_layer.objects.active = bpy.data.objects['scan']
+		bpy.context.scene.objects.active = bpy.data.objects['scan']
 		bpy.ops.object.modifier_add(type='BOOLEAN')
 		bpy.data.objects['scan'].modifiers['Boolean'].name = 'Customizations'
 		bpy.data.objects['scan'].modifiers['Customizations'].operation = 'UNION'
@@ -44,7 +44,7 @@ except:
 		pass
 
 bpy.ops.object.select_all(action='DESELECT')
-bpy.context.view_layer.objects.active = bpy.data.objects['preview']
+bpy.context.scene.objects.active = bpy.data.objects['preview']
 bpy.ops.object.modifier_add(type='BOOLEAN')
 bpy.data.objects['preview'].modifiers['Boolean'].name = 'scan'
 bpy.data.objects['preview'].modifiers['scan'].operation = 'DIFFERENCE'
@@ -55,7 +55,7 @@ def intersect_cube(name, loc):
 		bpy.ops.object.select_all(action='DESELECT')
 		bpy.ops.mesh.primitive_cube_add(radius=99.9, location=loc)
 		bpy.data.objects['Cube'].name = name
-		bpy.context.view_layer.objects.active = bpy.data.objects[name]
+		bpy.context.scene.objects.active = bpy.data.objects[name]
 		bpy.ops.object.modifier_add(type='BOOLEAN')
 		bpy.data.objects[name].modifiers['Boolean'].name = 'case'
 		bpy.data.objects[name].modifiers['case'].operation = 'INTERSECT'
@@ -64,10 +64,12 @@ def intersect_cube(name, loc):
 
 intersect_cube('front_bottom', (0, -20, 100))
 bpy.ops.transform.rotate(value=3.14159265/2, axis=(-1, 0, 0))
+#bpy.ops.transform.rotate(value=3.14159265/2, orient_axis='X')
 bpy.ops.export_mesh.stl(filepath='{tempdir}/front_bottom.stl', use_selection=True)
 
 intersect_cube('back_bottom', (0, -20, -100))
 bpy.ops.transform.rotate(value=3.14159265/2, axis=(-1, 0, 0))
+#bpy.ops.transform.rotate(value=3.14159265/2, orient_axis='X')
 bpy.ops.transform.translate(value=(0, 0, 200))
 bpy.ops.export_mesh.stl(filepath='{tempdir}/back_bottom.stl', use_selection=True)
 
@@ -76,6 +78,7 @@ bpy.ops.export_mesh.stl(filepath='{tempdir}/front_top.stl', use_selection=True)
 
 intersect_cube('back_top', (0, 180, -100))
 bpy.ops.transform.rotate(value=3.14159265, axis=(-1, 0, 0))
+#bpy.ops.transform.rotate(value=3.14159265, orient_axis='X')
 bpy.ops.export_mesh.stl(filepath='{tempdir}/back_top.stl', use_selection=True)
 
 """
@@ -95,7 +98,8 @@ def _call_blender(code):
 		New files will be initially cleared by deleting all objects.
 		"""
 		with Temp(mode="w") as tf:
-				cmd = "blender -b -P {script}".format(script=tf.name)
+				#cmd = "blender -b -P {script}".format(script=tf.name)
+				cmd = "/home/lixiangxu/Documents/Packages/blender279/blender -b -P {script}".format(script=tf.name)
 
 				tf.write(code)
 				tf.flush()
@@ -103,10 +107,7 @@ def _call_blender(code):
 
 def meshlab_filter(ms):
 	# "Transform: Move, Translate, Center"
-	ms.apply_filter(filter_name="transform_translate_center_set_origin",
-		axisx=-0.18,
-		axisy=-0.2,
-		axisz=-0.135)
+	ms.apply_filter(filter_name="transform_translate_center_set_origin")
 	# "Transform: Rotate"
 	ms.apply_filter(filter_name="transform_rotate",
 		rotaxis="Z axis",
@@ -162,7 +163,7 @@ def model_clean(infile, outfile):
 		ms.load_new_mesh(infile)
 		ms = meshlab_filter(ms)
 		ms.save_current_mesh(outfile)
-		
+
 		shutil.rmtree(path)
 
 
@@ -186,10 +187,10 @@ def gen_case(scanfile, outfile, casetype="s32"):
 		tempdir = mkdtemp()
 		_call_blender(blender_gen_output.format(
 				preview=casefile,
-				scan=scanfile, 
-				customizations=customizations, 
+				scan=scanfile,
+				customizations=customizations,
 				tempdir=tempdir))
-		
+
 		with zipfile.ZipFile(outfile, mode='w') as pkg:
 				pkg.write(os.path.join(tempdir, "back_bottom.stl"), "back_bottom.stl")
 				pkg.write(os.path.join(tempdir, "back_top.stl"), "back_top.stl")
@@ -200,15 +201,14 @@ def gen_case(scanfile, outfile, casetype="s32"):
 
 def pipeline(infile, outfile, **kwargs):
 		with Temp(suffix='.ply') as cleaned, Temp(suffix='.stl') as aligned:
-			print(cleaned.name, aligned.name)
-			model_clean(infile, cleaned.name)
-			align_scan(cleaned.name, aligned.name)
-			gen_case(aligned.name, outfile, **kwargs)
+			 model_clean(infile, cleaned.name)
+			 align_scan(cleaned.name, aligned.name)
+			 if not os.path.isdir('temp/'):
+			 	os.mkdir('temp')
+			 shutil.copyfile(cleaned.name, 'temp/cleaned.ply')
+			 shutil.copyfile(aligned.name, 'temp/aligned.stl')
+			 gen_case(aligned.name, outfile, **kwargs)
 
-			if not os.path.isdir('temp/'):
-				os.mkdir('temp')
-			shutil.copyfile(cleaned.name, 'temp/cleaned.ply')
-			shutil.copyfile(aligned.name, 'temp/aligned.stl')
 
 
 if __name__ == "__main__":
@@ -224,4 +224,4 @@ if __name__ == "__main__":
 		print("Invalid casetype")
 		raise
 	pipeline(infile, outfile, casetype=casetype)
-	
+
