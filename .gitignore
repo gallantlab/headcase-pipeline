@@ -8,3 +8,6 @@
 
 # temp folder
 temp/
+
+# mac fluff
+.DS_Store
