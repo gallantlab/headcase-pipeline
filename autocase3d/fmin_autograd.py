@@ -104,7 +104,7 @@ def _compute_log_det_cholesky(matrix_chol, covariance_type, n_features):
 
 def fit_xfm_autograd(infile, modelfile, **fmin_kwargs):
     new_features, new_polys = get_ply_features(infile)
-    gmm, means, stds = np.load(modelfile, encoding="bytes")
+    gmm, means, stds = np.load(modelfile, encoding="bytes", allow_pickle=True)
 
     sq_new_features = squash_features(new_features, means, stds)
 
