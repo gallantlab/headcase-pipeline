@@ -107,8 +107,7 @@ def _call_blender(code):
 		New files will be initially cleared by deleting all objects.
 		"""
 		with Temp(mode="w") as tf:
-				#cmd = "blender -b -P {script}".format(script=tf.name)
-				cmd = "/home/lixiangxu/Documents/Packages/blender2.79/blender -b -P {script}".format(script=tf.name)
+				cmd = "blender -b -P {script}".format(script=tf.name)
 
 				tf.write(code)
 				tf.flush()
