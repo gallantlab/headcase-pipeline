@@ -40,7 +40,7 @@ bpy.ops.object.modifier_add(type='DISPLACE')
 bpy.data.objects['scan'].modifiers['Displace'].name = 'shrinking'
 bpy.data.objects['scan'].modifiers['shrinking'].direction = 'NORMAL'
 bpy.data.objects['scan'].modifiers['shrinking'].mid_level = 0
-bpy.data.objects['scan'].modifiers['shrinking'].strength = 0.1
+bpy.data.objects['scan'].modifiers['shrinking'].strength = 0.25
 
 try:
     readstl('{customizations}', 'customizations')
@@ -122,7 +122,7 @@ def meshlab_filter(ms):
         filter_name="transform_rotate",
         rotaxis="Z axis",
         rotcenter="barycenter",
-        angle=180,
+        angle=0,
     )
     ms.apply_filter(
         filter_name="transform_scale_normalize",
@@ -136,7 +136,7 @@ def meshlab_filter(ms):
     ms.apply_filter(
         filter_name="remove_isolated_pieces_wrt_diameter",
         mincomponentdiag=150,
-        removeunref=False,
+        removeunref=True,
     )
     # "Remove Faces from Non Manifold Edges"
     ms.apply_filter(filter_name="repair_non_manifold_edges_by_removing_faces")
