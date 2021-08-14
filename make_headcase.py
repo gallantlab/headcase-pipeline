@@ -104,8 +104,8 @@ import argparse
 
 def _call_blender(code):
     """Call blender, while running the given code. If the filename doesn't exist, save a new file in that location.
-		New files will be initially cleared by deleting all objects.
-		"""
+    New files will be initially cleared by deleting all objects.
+    """
     with Temp(mode="w") as tf:
         cmd = "blender -b -P {script}".format(script=tf.name)
 
@@ -142,7 +142,9 @@ def meshlab_filter(ms):
     ms.apply_filter(filter_name="repair_non_manifold_edges_by_removing_faces")
     # "Close Holes"
     ms.apply_filter(
-        filter_name="close_holes", maxholesize=100, newfaceselected=False,
+        filter_name="close_holes",
+        maxholesize=100,
+        newfaceselected=False,
     )
     # "Surface Reconstruction: Poisson"
     ms.apply_filter(
@@ -234,27 +236,26 @@ if __name__ == "__main__":
         description="load zip object and output zip object"
     )
     parser.add_argument(
-        "-i",
-        dest="infile",
+        "infile",
         type=str,
-        default="Model.zip",
         help="input object filename (*.zip)",
     )
     parser.add_argument(
-        "-o",
-        dest="outfile",
+        "outfile",
         type=str,
-        default="Output.zip",
         help="output object filename (*.zip)",
     )
     parser.add_argument(
-        "-c", dest="casetype", type=str, default="s64", help="Casetype: [s32, s64, n32]"
+        "--headcoil",
+        "-c",
+        type=str,
+        default="s32",
+        help="Type of headcoil: s32 (siemens 32ch), s64 (siemens 64ch), or "
+        "n32 (nova 32ch). Default: s32",
+        choices=["s32", "s64", "n32"],
     )
     args = parser.parse_args()
     infile = args.infile
     outfile = args.outfile
     casetype = args.casetype
-    if casetype not in ["s32", "s64", "n32"]:
-        print("Invalid casetype")
-        raise
     pipeline(infile, outfile, casetype=casetype)
