@@ -43,7 +43,6 @@ dependencies:
     - click==8.0.1
     - cycler==0.10.0
     - cython==0.29.24
-    - flask==2.0.1
     - future==0.18.2
     - h5py==3.3.0
     - html5lib==1.1
