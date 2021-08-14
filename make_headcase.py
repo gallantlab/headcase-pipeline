@@ -168,11 +168,11 @@ if __name__ == "__main__":
         required=False,
         choices=[2, 4],
         help="Split the headcase model into 4 (default) or 2 parts. Four parts require "
-        "fewer support material when 3d printing the headcase.",
+        "less support material when 3d printing the headcase.",
     )
     args = parser.parse_args()
     infile = args.infile
     outfile = args.outfile
-    casetype = args.casetype
+    casetype = args.headcoil
     nparts = args.nparts
     pipeline(infile, outfile, casetype=casetype, nparts=nparts)
