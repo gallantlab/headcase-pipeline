@@ -1,5 +1,5 @@
 # __py__cache
-*/__pycache__/
+__pycache__/
 # zip, obj, ply file
 *.zip
 *.obj
@@ -11,3 +11,5 @@ temp/
 
 # mac fluff
 .DS_Store
+
+.idea
