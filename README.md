@@ -31,3 +31,23 @@ python make_headcase.py Model.zip Headcase.zip --headcoil s32
 ```
 
 This will generate a headcase model split into four parts and zipped in `Headcase.zip`. It is possible to generate headcases for the Siemens 32ch head-coil (`--headcoil s32`), Siemens 64ch head-coil (`--headcoil s64`), or Nova 32ch head-coil (`--headcoil n32`).
+
+### Running with docker
+
+We provide a Dockerfile to generate an image with all dependencies. Create the image with
+
+```bash
+docker build --tag caseforge .
+```
+
+then you can run the pipeline as
+
+```bash
+docker run --rm caseforge:latest --help
+```
+
+To let docker see the folder with the head model, you will have to bind the folder inside the container. For example, if the head model is in `/tmp/test-headcase/model.zip`, you would run the following command
+
+```bash
+docker run -v /tmp:/tmp --rm caseforge:latest /tmp/test-headcase/model.zip /tmp/test-headcase/case.zip
+```
