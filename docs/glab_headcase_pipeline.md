@@ -8,24 +8,20 @@ This doc contains instructions on how to generate a headcase using the Gallant L
 4. Optional tools: flat-head screwdriver, [dremel](https://www.amazon.com/Dremel-Cordless-Variable-Multi-Purpose-Accessory/dp/B07R9PNRBD/ref=sr_1_1?dchild=1&keywords=dremel&qid=1625796956&sr=8-1&srs=5538998011)
 
 ## How to use the Structure Sensor to scan the subject's head
-Make sure the [Structure app](https://apps.apple.com/us/app/structure/id570447097) and the [Calibration app](https://apps.apple.com/us/app/structure-sensor-calibrator/id914275485) have been downloaded. The structure app is used to scan the subject's head, and the calibration app is used to calibrate the distance between the structure scanner's camera and the iPad's camera. 
+Make sure the [Scanner app](https://apps.apple.com/us/app/scanner-structure-sdk/id891169722) and the [Calibration app](https://apps.apple.com/us/app/structure-sensor-calibrator/id914275485) have been downloaded. The scanner app is used to scan the subject's head, and the calibration app is used to calibrate the distance between the structure scanner's camera and the iPad's camera. 
 
 ### Prepare the subject.
-Have the subject put on the swim cap and the hood. The swim cap should be rotated 90 degrees, such that the seam goes from ear to ear. Instruct the subject to pull the cap down, past their ears, to eliminate wrinkles. The hood should also be smoothed to remove wrinkles and pulled down and forward to reveal the back of their neck. They should hold the hood down and forward during the scan. See the image below as a reference.
-![alt text](https://github.com/gallantlab/caseforge-pipeline/blob/master/docs/preparethesubject.png)
+Have the subject put on both the swim cap and the hood. The swim cap should be rotated 90 degrees, such that the seam goes from ear to ear. Instruct the subject to pull the cap down, past their ears, to eliminate wrinkles. The hood should also be smoothed to remove wrinkles and pulled down and forward to reveal the back of their neck. They should hold the hood down and forward during the scan. See the image below as a reference.
+![alt text](https://github.com/gallantlab/caseforge-pipeline/blob/master/docs/explanatory_ims/pipeline_preparethesubject.png)
 
 ### Scan the subject's head.
-Connect the scanner to the iPad and open the Scanner app. Before starting the scan, change the following settings:
-- body depth preset
-- stream vga depth = OFF
-- high resolution color = OFF 
-- IR auto exposure = OFF
-- STSLAM manager = ON
-- tracker type = color + depth
-- improved tracker = OFF
+Connect the scanner to the iPad and open the Scanner app. Before starting the scan, adjust the settings to match the options below:
+<img src="https://github.com/gallantlab/caseforge-pipeline/blob/master/docs/explanatory_ims/pipeline_scansettings.png" width="200"/>
+
 
 Stand about 3ft (1m) away from the subject, so the scanning window captures the subject's head + neck and not their shoulders. Start the scan and slowly walk around the subject. Occasionally angle the scanner up and down, to make sure to capture the tip of the subject's nose and the top of their head. After making two full rotations around the subject, stop the scan. If the scan is not smooth and continuous, restart the process. See the image below as an example.<br><br>
-![alt text](https://github.com/gallantlab/caseforge-pipeline/blob/master/docs/exampleheadscan.png)
+<img src="https://github.com/gallantlab/caseforge-pipeline/blob/master/docs/explanatory_ims/pipeline_exampleheadscan.png" width="200"/>
+
 
 Once you have a good scan, send the file to an email you can access.
 
