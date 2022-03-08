@@ -19,9 +19,10 @@ Connect the scanner to the iPad and open the Scanner app. Before starting the sc
 <img src="https://github.com/gallantlab/caseforge-pipeline/blob/master/docs/explanatory_ims/pipeline_scansettings.png" width="200"/>
 
 
+NOTE: Sometimes, changing all the settings above causes the app to crash. If so, the most important settings to change are switching "High Resolution Color" to "off", "Depth Stream Preset" to "Body", and "Tracker Type" to "Depth Only".
+
 Stand about 3ft (1m) away from the subject, so the scanning window captures the subject's head + neck and not their shoulders. Start the scan and slowly walk around the subject. Occasionally angle the scanner up and down, to make sure to capture the tip of the subject's nose and the top of their head. After making two full rotations around the subject, stop the scan. If the scan is not smooth and continuous, restart the process. See the image below as an example.<br><br>
 <img src="https://github.com/gallantlab/caseforge-pipeline/blob/master/docs/explanatory_ims/pipeline_exampleheadscan.png" width="200"/>
-
 
 Once you have a good scan, send the file to an email you can access.
 
