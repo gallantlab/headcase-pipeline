@@ -1,5 +1,5 @@
 pycortex
-pymeshlab
+pymeshlab==2021.7
 plyfile
 autograd
 numpy

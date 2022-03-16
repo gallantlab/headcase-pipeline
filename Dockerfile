@@ -78,6 +78,7 @@ RUN export PATH="/opt/miniconda-latest/bin:$PATH" \
     &&   pip install --no-cache-dir  \
              "-r" \
              "/headcase-pipeline/requirements.txt"" \
+    && pip install --upgrade numpy \
     && rm -rf ~/.cache/pip/* \
     && sync \
     && sed -i '$isource activate base' $ND_ENTRYPOINT
