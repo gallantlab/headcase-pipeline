@@ -26,37 +26,40 @@ def _call_blender(code):
 
 def meshlab_filter(ms):
     # "Transform: Move, Translate, Center"
-    ms.apply_filter(filter_name="transform_translate_center_set_origin")
+    ms.apply_filter(filter_name="compute_matrix_from_translation")
     # "Transform: Rotate"
     ms.apply_filter(
-        filter_name="transform_rotate",
+        filter_name="compute_matrix_from_rotation",
         rotaxis="Z axis",
         rotcenter="barycenter",
         angle=0,
     )
     ms.apply_filter(
-        filter_name="transform_scale_normalize",
+        filter_name="compute_matrix_from_scaling_or_normalization",
         axisx=1000,
         scalecenter="barycenter",
         unitflag=False,
     )
     # "Merge Close Vertices"
-    ms.apply_filter(filter_name="merge_close_vertices", threshold=0.5)
+    ms.apply_filter(filter_name="meshing_merge_close_vertices", threshold=pymeshlab.Percentage(0.5))
     # "Remove Isolated pieces (wrt Diameter)"
     ms.apply_filter(
-        filter_name="remove_isolated_pieces_wrt_diameter",
-        mincomponentdiag=150,
+        filter_name="meshing_remove_connected_component_by_diameter",
+        mincomponentdiag=pymeshlab.AbsoluteValue(150),
         removeunref=True,
     )
     # "Remove Faces from Non Manifold Edges"
-    ms.apply_filter(filter_name="repair_non_manifold_edges_by_removing_faces")
+    ms.apply_filter(
+        filter_name="meshing_repair_non_manifold_edges",
+        method = 'Remove Faces'
+    )
     # "Close Holes"
     ms.apply_filter(
-        filter_name="close_holes", maxholesize=100, newfaceselected=False,
+        filter_name="meshing_close_holes", maxholesize=100, newfaceselected=False,
     )
     # "Surface Reconstruction: Poisson"
     ms.apply_filter(
-        filter_name="surface_reconstruction_screened_poisson",
+        filter_name="generate_surface_reconstruction_screened_poisson",
         depth=11,
         fulldepth=2,
         samplespernode=1,
@@ -65,12 +68,12 @@ def meshlab_filter(ms):
     )
     # "Vertex Attribute Transfer"
     ms.apply_filter(
-        filter_name="vertex_attribute_transfer",
+        filter_name="transfer_attributes_per_vertex",
         sourcemesh=1,
         targetmesh=0,
         geomtransfer=True,
         colortransfer=False,
-        upperbound=8.631,
+        upperbound=pymeshlab.Percentage(8.631),
     )
     return ms
 
