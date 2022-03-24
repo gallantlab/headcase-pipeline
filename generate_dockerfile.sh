@@ -10,6 +10,7 @@ docker run --rm repronim/neurodocker:latest generate docker \
 	activate=True \
 	conda_install="python=3 numpy scipy cython" \
 	pip_install="-r /headcase-pipeline/requirements.txt" \
+	--run "pip install --upgrade numpy" \
 	--run "useradd -m -s /bin/bash -G users headcase" \
 	--env HOME=/home/headcase \
 	--run "mkdir /home/headcase/.config" \
