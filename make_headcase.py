@@ -51,7 +51,7 @@ def meshlab_filter(ms):
     # "Remove Faces from Non Manifold Edges"
     ms.apply_filter(
         filter_name="meshing_repair_non_manifold_edges",
-        method = 'Remove Faces'
+        method="Remove Faces"
     )
     # "Close Holes"
     ms.apply_filter(
