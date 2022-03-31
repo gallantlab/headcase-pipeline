@@ -24,61 +24,119 @@ def _call_blender(code):
         sp.call(shlex.split(cmd))
 
 
-def meshlab_filter(ms):
+def meshlab_filter(ms, pmlab_version):
     # "Transform: Move, Translate, Center"
-    ms.apply_filter(filter_name="compute_matrix_from_translation")
+    if pmlab_version >= 2022.2:
+        ms.apply_filter(filter_name="compute_matrix_from_translation")
+    else:
+        ms.apply_filter(filter_name="transform_translate_center_set_origin")
     # "Transform: Rotate"
-    ms.apply_filter(
-        filter_name="compute_matrix_from_rotation",
-        rotaxis="Z axis",
-        rotcenter="barycenter",
-        angle=0,
-    )
-    ms.apply_filter(
-        filter_name="compute_matrix_from_scaling_or_normalization",
-        axisx=1000,
-        scalecenter="barycenter",
-        unitflag=False,
-    )
+    if pmlab_version >= 2022.2:
+        ms.apply_filter(
+            filter_name="compute_matrix_from_rotation",
+            rotaxis="Z axis",
+            rotcenter="barycenter",
+            angle=0,
+        )
+        ms.apply_filter(
+            filter_name="compute_matrix_from_scaling_or_normalization",
+            axisx=1000,
+            scalecenter="barycenter",
+            unitflag=False,
+        )
+    else:
+        ms.apply_filter(
+            filter_name="transform_rotate",
+            rotaxis="Z axis",
+            rotcenter="barycenter",
+            angle=0,
+        )
+        ms.apply_filter(
+            filter_name="transform_scale_normalize",
+            axisx=1000,
+            scalecenter="barycenter",
+            unitflag=False,
+        )
     # "Merge Close Vertices"
-    ms.apply_filter(filter_name="meshing_merge_close_vertices", threshold=pymeshlab.Percentage(0.5))
+    if pmlab_version >= 2022.2:
+        ms.apply_filter(filter_name="meshing_merge_close_vertices", threshold=pymeshlab.Percentage(0.5))
+    else:
+        ms.apply_filter(filter_name="merge_close_vertices", threshold=0.5)
     # "Remove Isolated pieces (wrt Diameter)"
-    ms.apply_filter(
-        filter_name="meshing_remove_connected_component_by_diameter",
-        mincomponentdiag=pymeshlab.AbsoluteValue(150),
-        removeunref=True,
-    )
+    if pmlab_version >= 2022.2:
+        ms.apply_filter(
+            filter_name="meshing_remove_connected_component_by_diameter",
+            mincomponentdiag=pymeshlab.AbsoluteValue(150),
+            removeunref=True,
+        )
+    else:
+        ms.apply_filter(
+            filter_name="remove_isolated_pieces_wrt_diameter",
+            mincomponentdiag=150,
+            removeunref=True,
+        )
     # "Remove Faces from Non Manifold Edges"
-    ms.apply_filter(
-        filter_name="meshing_repair_non_manifold_edges",
-        method="Remove Faces"
-    )
+    if pmlab_version >= 2022.2:
+        ms.apply_filter(
+            filter_name="meshing_repair_non_manifold_edges",
+            method="Remove Faces"
+        )
+    else:
+        ms.apply_filter(
+            filter_name="repair_non_manifold_edges_by_removing_faces",
+            method="Remove Faces"
+        )
     # "Close Holes"
-    ms.apply_filter(
-        filter_name="meshing_close_holes", maxholesize=100, newfaceselected=False,
-    )
+    if pmlab_version >= 2022.2:
+        ms.apply_filter(
+            filter_name="meshing_close_holes", maxholesize=100, newfaceselected=False,
+        )
+    else:
+        ms.apply_filter(
+            filter_name="close_holes", maxholesize=100, newfaceselected=False,
+        )
     # "Surface Reconstruction: Poisson"
-    ms.apply_filter(
-        filter_name="generate_surface_reconstruction_screened_poisson",
-        depth=11,
-        fulldepth=2,
-        samplespernode=1,
-        # pointweight=0,
-        preclean=True,
-    )
+    if pmlab_version >= 2022.2:
+        ms.apply_filter(
+            filter_name="generate_surface_reconstruction_screened_poisson",
+            depth=11,
+            fulldepth=2,
+            samplespernode=1,
+            # pointweight=0,
+            preclean=True,
+        )
+    else:
+        ms.apply_filter(
+            filter_name="surface_reconstruction_screened_poisson",
+            depth=11,
+            fulldepth=2,
+            samplespernode=1,
+            # pointweight=0,
+            preclean=True,
+        )
     # "Vertex Attribute Transfer"
-    ms.apply_filter(
-        filter_name="transfer_attributes_per_vertex",
-        sourcemesh=1,
-        targetmesh=0,
-        geomtransfer=True,
-        colortransfer=False,
-        upperbound=pymeshlab.Percentage(8.631),
-    )
+    if pmlab_version >= 2022.2:
+        ms.apply_filter(
+            filter_name="transfer_attributes_per_vertex",
+            sourcemesh=1,
+            targetmesh=0,
+            geomtransfer=True,
+            colortransfer=False,
+            upperbound=pymeshlab.Percentage(8.631),
+        )
+    else:
+        ms.apply_filter(
+            filter_name="vertex_attribute_transfer",
+            sourcemesh=1,
+            targetmesh=0,
+            geomtransfer=True,
+            colortransfer=False,
+            upperbound=8.631,
+        )
     return ms
 
 
-def model_clean(infile, outfile):
+def model_clean(infile, outfile, pmlab_version):
     path = mkdtemp()
     pkg = zipfile.ZipFile(infile)
     pkg.extractall(path)
@@ -87,7 +145,7 @@ def model_clean(infile, outfile):
     infile = os.path.join(path, "Model.obj")
     ms = pymeshlab.MeshSet()
     ms.load_new_mesh(infile)
-    ms = meshlab_filter(ms)
+    ms = meshlab_filter(ms, pmlab_version)
     ms.save_current_mesh(outfile)
 
     shutil.rmtree(path)
@@ -133,9 +191,9 @@ def gen_case(scanfile, outfile, casetype="s32", nparts=4):
     shutil.rmtree(tempdir)
 
 
-def pipeline(infile, outfile, **kwargs):
+def pipeline(infile, outfile, pmlab_version, **kwargs):
     with Temp(suffix=".ply") as cleaned, Temp(suffix=".stl") as aligned:
-        model_clean(infile, cleaned.name)
+        model_clean(infile, cleaned.name, pmlab_version)
         align_scan(cleaned.name, aligned.name)
         # if not os.path.isdir('temp/'):
         # 	os.mkdir('temp')
@@ -179,4 +237,7 @@ if __name__ == "__main__":
     outfile = args.outfile
     casetype = args.headcoil
     nparts = args.nparts
-    pipeline(infile, outfile, casetype=casetype, nparts=nparts)
+    # Check pymeshlab version to use corresponding filter names
+    proc = sp.check_output(["python", "-c", "import pymeshlab ; pymeshlab.pmeshlab.print_pymeshlab_version()"])
+    pmlab_version = float(str(proc).split()[1])
+    pipeline(infile, outfile, pmlab_version, casetype=casetype, nparts=nparts)
