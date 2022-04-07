@@ -105,10 +105,7 @@ def meshlab_filter_pre2022(ms):
         removeunref=True,
     )
     # "Remove Faces from Non Manifold Edges"
-    ms.apply_filter(
-        filter_name="repair_non_manifold_edges_by_removing_faces",
-        method="Remove Faces"
-    )
+    ms.apply_filter(filter_name="repair_non_manifold_edges_by_removing_faces")
     # "Close Holes"
     ms.apply_filter(
         filter_name="close_holes", maxholesize=100, newfaceselected=False,
