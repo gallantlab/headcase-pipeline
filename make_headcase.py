@@ -9,6 +9,8 @@ import subprocess as sp
 import pymeshlab
 import argparse
 
+from distutils.version import LooseVersion
+
 from blender_code import blender_carve_model_template
 
 
@@ -25,6 +27,60 @@ def _call_blender(code):
 
 
 def meshlab_filter(ms):
+    # "Transform: Move, Translate, Center"
+    ms.apply_filter(filter_name="compute_matrix_from_translation")
+    # "Transform: Rotate"
+    ms.apply_filter(
+        filter_name="compute_matrix_from_rotation",
+        rotaxis="Z axis",
+        rotcenter="barycenter",
+        angle=0,
+    )
+    ms.apply_filter(
+        filter_name="compute_matrix_from_scaling_or_normalization",
+        axisx=1000,
+        scalecenter="barycenter",
+        unitflag=False,
+    )
+    # "Merge Close Vertices"
+    ms.apply_filter(filter_name="meshing_merge_close_vertices", threshold=pymeshlab.Percentage(0.5))
+    # "Remove Isolated pieces (wrt Diameter)"
+    ms.apply_filter(
+        filter_name="meshing_remove_connected_component_by_diameter",
+        mincomponentdiag=pymeshlab.AbsoluteValue(150),
+        removeunref=True,
+    )
+    # "Remove Faces from Non Manifold Edges"
+    ms.apply_filter(
+        filter_name="meshing_repair_non_manifold_edges",
+        method="Remove Faces"
+    )
+    # "Close Holes"
+    ms.apply_filter(
+        filter_name="meshing_close_holes", maxholesize=100, newfaceselected=False,
+    )
+    # "Surface Reconstruction: Poisson"
+    ms.apply_filter(
+        filter_name="generate_surface_reconstruction_screened_poisson",
+        depth=11,
+        fulldepth=2,
+        samplespernode=1,
+        # pointweight=0,
+        preclean=True,
+    )
+    # "Vertex Attribute Transfer"
+    ms.apply_filter(
+        filter_name="transfer_attributes_per_vertex",
+        sourcemesh=1,
+        targetmesh=0,
+        geomtransfer=True,
+        colortransfer=False,
+        upperbound=pymeshlab.Percentage(8.631),
+    )
+    return ms
+
+
+def meshlab_filter_pre2022(ms):
     # "Transform: Move, Translate, Center"
     ms.apply_filter(filter_name="transform_translate_center_set_origin")
     # "Transform: Rotate"
@@ -84,7 +140,13 @@ def model_clean(infile, outfile):
     infile = os.path.join(path, "Model.obj")
     ms = pymeshlab.MeshSet()
     ms.load_new_mesh(infile)
-    ms = meshlab_filter(ms)
+    
+    PYMESHLAB_VERSION = pymeshlab_version()
+    if PYMESHLAB_VERSION >= LooseVersion('2022.2'):
+        ms = meshlab_filter(ms)
+    else:
+        ms = meshlab_filter_pre2022(ms)
+
     ms.save_current_mesh(outfile)
 
     shutil.rmtree(path)
@@ -128,6 +190,13 @@ def gen_case(scanfile, outfile, casetype="s32", nparts=4):
             pkg.write(os.path.join(tempdir, fn), fn)
 
     shutil.rmtree(tempdir)
+
+
+def pymeshlab_version():
+    out = sp.check_output(["python", "-c", "import pymeshlab ; pymeshlab.pmeshlab.print_pymeshlab_version()"])
+    # b'PyMeshLab 2021.10 based on MeshLab 2021.10d\n'
+    version = LooseVersion(out.decode().split()[1])
+    return version
 
 
 def pipeline(infile, outfile, **kwargs):
