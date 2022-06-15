@@ -1,10 +1,6 @@
 # An automated pipeline to create subject-specific headcases for fMRI scanning
 
-<p align="center">
-  <img src="docs/headcase-image.jpg" />
-</p>
-
-
+<img align="left" src="docs/headcase-image.jpg" width=300/>
 This repository contains an automated pipeline to create subject-specific headcases for fMRI scanning. Headcases reduce subject motion ([Power et al., 2019](https://pubmed.ncbi.nlm.nih.gov/30639840/)), increase subject's comfort, and facilitate consistent head positioning across multiple scanning sessions. 
 
 The pipeline takes as an input a 3D model of the participant's head and generates STL files of the headcases for 3D printing. This pipeline has been  tested only with a [Structure Sensor](https://structure.io/structure-sensor-pro), but we think other sensors may be used.
