@@ -1,16 +1,17 @@
-# An automated pipeline to create subject-specific headcases for fMRI scanning
+# An automated pipeline to create subject-specific headcases for fMRI
 
 <img align="left" src="docs/headcase-image.jpg" width=300/>
-This repository contains an automated pipeline to create subject-specific headcases for fMRI scanning. Headcases reduce subject motion ([Power et al., 2019](https://pubmed.ncbi.nlm.nih.gov/30639840/)), increase subject's comfort, and facilitate consistent head positioning across multiple scanning sessions. 
+This repository contains an automated pipeline to create subject-specific headcases for fMRI. 
+
+Headcases reduce subject motion (<a href="https://pubmed.ncbi.nlm.nih.gov/30639840/">Power et al., 2019</a>), increase subject's comfort, and facilitate consistent head positioning across multiple scanning sessions. 
 
 The pipeline takes as an input a 3D model of the participant's head and generates STL files of the headcases for 3D printing. This pipeline has been  tested only with a [Structure Sensor](https://structure.io/structure-sensor-pro), but we think other sensors may be used.
 
-Headcases can be generated for the following head coils: 
-- Siemens 32 channel
-- Siemens 64 channel
-- Nova 32 channel
+Headcases can be generated for the following head coils: Siemens 32ch, Siemens 64ch, and Nova 32ch.
 
 The pipeline is written in Python and uses [MeshLab](https://www.meshlab.net/) and [Blender](https://www.blender.org/). 
+
+<br><br>
 
 
 ## Usage
