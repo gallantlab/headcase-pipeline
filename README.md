@@ -1,21 +1,16 @@
 # An automated pipeline to create subject-specific headcases for fMRI scanning
 
-<p align="center">
-  <img src="docs/headcase-image.jpg" />
-</p>
+<img align="left" src="docs/headcase-image.jpg" width=300/>
+This repository contains an automated pipeline to create subject-specific headcases for fMRI scanning. 
 
-
-This repository contains an automated pipeline to create subject-specific headcases for fMRI scanning. Headcases reduce subject motion ([Power et al., 2019](https://pubmed.ncbi.nlm.nih.gov/30639840/)), increase subject's comfort, and facilitate consistent head positioning across multiple scanning sessions. 
+Headcases reduce subject motion (<a href="https://pubmed.ncbi.nlm.nih.gov/30639840/">Power et al., 2019</a>), increase subject's comfort, and facilitate consistent head positioning across multiple scanning sessions. 
 
 The pipeline takes as an input a 3D model of the participant's head and generates STL files of the headcases for 3D printing. This pipeline has been  tested only with a [Structure Sensor](https://structure.io/structure-sensor-pro), but we think other sensors may be used.
 
-Headcases can be generated for the following head coils: 
-- Siemens 32 channel
-- Siemens 64 channel
-- Nova 32 channel
+Headcases can be generated for the following head coils: Siemens 32ch, Siemens 64ch, and Nova 32ch.
 
 The pipeline is written in Python and uses [MeshLab](https://www.meshlab.net/) and [Blender](https://www.blender.org/). 
-
+<br clear="left">
 
 ## Usage
 
@@ -74,3 +69,12 @@ The pipeline also requires
 
 - Blender 2.7.9 (**Do not use newer versions of Blender, or the pipeline won't work.**)
 - MeshLab 1.3.2 (**The pipeline has been tested only with this version.**)
+
+## Common problems
+
+- The participant's head is not aligned correctly inside the headcase (turned upside down, flipped front-back, etc.): this problem can be caused by a 3D model that covers too much of the participant's shoulders. The participant's head will need to be scanned again with a tighter bounding box only around the head.
+- The participant reports that the headcase is too tight, especially on the cheeckbones: this is a known problem that can occur for some participants. We are currently working on a solution for this problem.
+
+## Getting help
+
+To get help or report problems, please open an [issue](https://github.com/gallantlab/headcase-pipeline/issues) on this github repository.
