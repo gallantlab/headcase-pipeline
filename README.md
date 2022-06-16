@@ -10,6 +10,7 @@ The pipeline takes as an input a 3D model of the participant's head and generate
 Headcases can be generated for the following head coils: Siemens 32ch, Siemens 64ch, and Nova 32ch.
 
 The pipeline is written in Python and uses [MeshLab](https://www.meshlab.net/) and [Blender](https://www.blender.org/). 
+<br clear="left">
 
 ## Usage
 
