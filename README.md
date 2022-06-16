@@ -77,4 +77,4 @@ The pipeline also requires
 
 ## Getting help
 
-To get help or report problems, please open an issue on this github repository.
+To get help or report problems, please open an [issue](https://github.com/gallantlab/headcase-pipeline/issues) on this github repository.
