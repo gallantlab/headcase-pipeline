@@ -69,3 +69,12 @@ The pipeline also requires
 
 - Blender 2.7.9 (**Do not use newer versions of Blender, or the pipeline won't work.**)
 - MeshLab 1.3.2 (**The pipeline has been tested only with this version.**)
+
+## Common problems
+
+- The participant's head is not aligned correctly inside the headcase (turned upside down, flipped front-back, etc.): this problem can be caused by a 3D model that covers too much of the participant's shoulders. The participant's head will need to be scanned again with a tighter bounding box only around the head.
+- The participant reports that the headcase is too tight, especially on the cheeckbones: this is a known problem that can occur for some participants. We are currently working on a solution for this problem.
+
+## Getting help
+
+To get help or report problems, please open an issue on this github repository.
