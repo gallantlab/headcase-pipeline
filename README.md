@@ -1,7 +1,7 @@
-# An automated pipeline to create subject-specific headcases for fMRI
+# An automated pipeline to create subject-specific headcases for fMRI scanning
 
 <img align="left" src="docs/headcase-image.jpg" width=300/>
-This repository contains an automated pipeline to create subject-specific headcases for fMRI. 
+This repository contains an automated pipeline to create subject-specific headcases for fMRI scanning. 
 
 Headcases reduce subject motion (<a href="https://pubmed.ncbi.nlm.nih.gov/30639840/">Power et al., 2019</a>), increase subject's comfort, and facilitate consistent head positioning across multiple scanning sessions. 
 
