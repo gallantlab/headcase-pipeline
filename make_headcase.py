@@ -167,7 +167,12 @@ def align_scan(infile, outfile):
 def gen_case(scanfile, outfile, casetype="s32", nparts=4):
     cwd, _ = os.path.split(__file__)
     customizations = os.path.join(cwd, "stls", "default_customizations.stl")
-    casefile = dict(s32="s32.stl", s64="s64.stl", n32="n32.stl")
+    casefile = dict(
+        s32="s32.stl",
+        s64="s64.stl",
+        n32="n32.stl",
+        meg_ctf275="meg_ctf275.stl"
+    )
     casefile = os.path.join(cwd, "stls", casefile[casetype])
 
     tempdir = mkdtemp()
@@ -204,7 +209,7 @@ def pipeline(infile, outfile, **kwargs):
         model_clean(infile, cleaned.name)
         align_scan(cleaned.name, aligned.name)
         # if not os.path.isdir('temp/'):
-        # 	os.mkdir('temp')
+        #     os.mkdir('temp')
         # shutil.copyfile(cleaned.name, 'temp/cleaned.ply')
         # shutil.copyfile(aligned.name, 'temp/aligned.stl')
         gen_case(aligned.name, outfile, **kwargs)
@@ -228,7 +233,7 @@ if __name__ == "__main__":
         default="s32",
         help="Type of headcoil: s32 (siemens 32ch), s64 (siemens 64ch), or "
         "n32 (nova 32ch). Default: s32",
-        choices=["s32", "s64", "n32"],
+        choices=["s32", "s64", "n32", "meg_ctf275"],
     )
     parser.add_argument(
         "--nparts",
