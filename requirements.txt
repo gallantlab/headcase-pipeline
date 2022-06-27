@@ -3,5 +3,5 @@ pymeshlab
 plyfile
 autograd
 numpy
-scipy
+scipy<1.8.0
 scikit-learn<=0.21.3
