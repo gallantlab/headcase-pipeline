@@ -231,8 +231,8 @@ if __name__ == "__main__":
         "-c",
         type=str,
         default="s32",
-        help="Type of headcoil: s32 (siemens 32ch), s64 (siemens 64ch), or "
-        "n32 (nova 32ch). Default: s32",
+        help="Type of headcoil: s32 (siemens 32ch), s64 (siemens 64ch), "
+        "n32 (nova 32ch), or meg_ctf275 (MEG CTF275). Default: s32",
         choices=["s32", "s64", "n32", "meg_ctf275"],
     )
     parser.add_argument(
