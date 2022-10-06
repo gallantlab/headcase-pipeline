@@ -28,6 +28,19 @@ Several options are available, including whether the headcase should be split in
 python make_headcases.py --help
 ```
 
+### Performing manual adjustments
+The automatic pipeline should work well in most cases. However, if it's necessary to manually tune the alignment of the head model, it's possible to specify a working directory.
+In this case, the intermediate files will be stored in the working directory and not deleted at the end. The intermediate files are 
+- `01cleaned.ply` for the cleaned head model, and 
+- `02aligned.stl` for the aligned head model
+
+To manually refine the alignement, `02aligned.stl` can be loaded in blender with the desired headcase model (stored under the `stls` directory of this repository).
+Finally, the headcase can be generated with
+
+```bash
+python make_headcases.py --headcoil s32 --generate-headcase-only 02aligned.stl Headcase.zip
+```
+
 ## Running with Docker
 
 We recommend running the pipeline with the Dockerfile provided in this repository.
@@ -47,7 +60,7 @@ docker run --rm caseforge:latest --help
 To let docker see the folder containing the head 3D model, you will have to bind the folder inside the container. For example, if the head model is in `/tmp/test-headcase/model.zip`, the following command should be run
 
 ```bash
-docker run -v /tmp:/tmp --rm caseforge:latest /tmp/test-headcase/model.zip /tmp/test-headcase/case.zip
+docker run -v /tmp:/tmp -t --rm caseforge:latest /tmp/test-headcase/model.zip /tmp/test-headcase/case.zip
 ```
 
 ## Manual installation
