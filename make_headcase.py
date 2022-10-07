@@ -281,11 +281,12 @@ if __name__ == "__main__":
         type=str,
         required=False,
         default=None,
-        help="Working directory to use. If none is passed, then a temporary directory "
-             "is used and deleted at the end. If a directory is passed, the "
-             "intermediate models are not deleted. This option is useful for manual "
-             "tuning of the alignment, in combination with the flag "
-             "--generated-headcase-only"
+        help="Working directory to use. If this flag is not used, "
+             "then a temporary directory is created and deleted at the end. "
+             "If this flag is used, the intermediate models are stored "
+             "in the working directory and not deleted. "
+             "This option is useful for manual tuning of the alignment, "
+             "in combination with the flag --generated-headcase-only"
     )
     args = parser.parse_args()
     infile = os.path.abspath(args.infile)
