@@ -30,6 +30,11 @@ python make_headcases.py --help
 
 ### Performing manual adjustments
 The automatic pipeline should work well in most cases. However, if it's necessary to manually tune the alignment of the head model, it's possible to specify a working directory.
+
+```bash
+python make_headcases.py --workdir /path/to/workdir Model.zip Headcase.zip --headcoil s32
+```
+
 In this case, the intermediate files will be stored in the working directory and not deleted at the end. The intermediate files are 
 - `01cleaned.ply` for the cleaned head model, and 
 - `02aligned.stl` for the aligned head model
@@ -38,7 +43,7 @@ To manually refine the alignement, `02aligned.stl` can be loaded in blender with
 Finally, the headcase can be generated with
 
 ```bash
-python make_headcases.py --headcoil s32 --generate-headcase-only 02aligned.stl Headcase.zip
+python make_headcases.py --headcoil s32 --generate-headcase-only /path/to/workdir/02aligned.stl Headcase.zip
 ```
 
 ## Running with Docker
