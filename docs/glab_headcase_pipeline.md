@@ -49,7 +49,7 @@ Once you have a good scan, send the file to an email you can access.
     - Adhesion = select
 6. Download the [custom support plugin](https://marketplace.ultimaker.com/app/cura/plugins/lokster/CustomSupports) and use it to add supports to the headcase.
 7. In the `PREVIEW` page, make sure there is enough filament loaded to print the headcase.
-8. Print the headcase! This should take about 8-12 hours.
+8. Print the headcase! This should take about 24 hours.
 9. Once the printing is complete and the printer bed has fully cooled, remove the headcase from the printer and indicate on the printer that the object has been removed from the bed.
 10. (Optional) Use a flat head screw driver to chip away the supporting material. Use the dremel to smooth any rough portions.
 
