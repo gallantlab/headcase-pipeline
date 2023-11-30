@@ -5,7 +5,7 @@ docker run --rm repronim/neurodocker:latest generate docker \
 	--base-image ubuntu:20.04 \
 	--env "DEBIAN_FRONTEND=noninteractive" \
 	--run "chmod 777 /tmp" \
-	--install libopengl0 build-essential curl ca-certificates libxi6 libglu1-mesa libglib2.0-0 libxrender1 \
+	--install git libopengl0 build-essential curl ca-certificates libxi6 libglu1-mesa libglib2.0-0 libxrender1 \
 	--run "mkdir -p /opt/blender
 	curl -fL https://download.blender.org/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2 | tar -xj -C /opt/blender --strip-components 1" \
 	--env "PATH=/opt/blender:\$PATH" \
@@ -18,7 +18,7 @@ docker run --rm repronim/neurodocker:latest generate docker \
 	--copy . "/headcase-pipeline" \
 	--miniconda \
 	version=latest \
-	conda_install="python=3.9 numpy scipy cython<3.0" \
+	conda_install="python=3.9 gxx_linux-64" \
 	pip_install="-r /headcase-pipeline/requirements.txt" \
 	--run "useradd -m -s /bin/bash -G users headcase" \
 	--env HOME=/home/headcase \
