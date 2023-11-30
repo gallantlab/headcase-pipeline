@@ -136,7 +136,7 @@ def _compute_log_det_cholesky(matrix_chol, covariance_type, n_features):
 
 
 def _load_gmm_model():
-    """Load GMM model by loading the parameters and instatiating a GMM object."""
+    """Load GMM model by loading the parameters and instantiating a GMM object."""
     here = os.path.dirname(os.path.abspath(__file__))
     model_file = os.path.join(here, "gmm_params.npz")
     params = np.load(model_file)
