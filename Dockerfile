@@ -8,14 +8,20 @@ RUN apt-get update -qq \
                   build-essential \
                   ca-certificates \
                   curl \
+                  libglib2.0-0 \
+                  libglu1-mesa \
                   libopengl0 \
                   libxi6 \
-                  meshlab \
+                  libxrender1 \
            && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /opt/blender \
     && 	curl -fL https://download.blender.org/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2 | tar -xj -C /opt/blender --strip-components 1
 ENV PATH="/opt/blender:$PATH"
 RUN blender --version
+RUN mkdir -p /opt/meshlab \
+    && 	curl -fL https://github.com/cnr-isti-vclab/meshlab/releases/download/MeshLab-2022.02/MeshLab2022.02d-linux.tar.gz | tar -xz -C /opt/meshlab
+ENV PATH="/opt/meshlab/usr/bin:$PATH"
+RUN meshlab --version
 ENV SKLEARN_NO_OPENMP="1"
 COPY [".", \
       "/headcase-pipeline"]
@@ -61,7 +67,8 @@ RUN apt-get update -qq \
 RUN useradd -m -s /bin/bash -G users headcase
 ENV HOME="/home/headcase"
 RUN mkdir /home/headcase/.config
-RUN python -c 'import cortex'
+RUN python -c 'import cortex; print(cortex.__version__)'
+RUN python -c 'import pymeshlab'
 WORKDIR /headcase-pipeline
 ENTRYPOINT ["python", "/headcase-pipeline/make_headcase.py"]
 
@@ -96,10 +103,12 @@ RUN printf '{ \
         "pkgs": [ \
           "libopengl0", \
           "build-essential", \
-          "meshlab", \
           "curl", \
           "ca-certificates", \
-          "libxi6" \
+          "libxi6", \
+          "libglu1-mesa", \
+          "libglib2.0-0", \
+          "libxrender1" \
         ], \
         "opts": null \
       } \
@@ -107,7 +116,7 @@ RUN printf '{ \
     { \
       "name": "run", \
       "kwds": { \
-        "command": "apt-get update -qq \\\\\\n    && apt-get install -y -q --no-install-recommends \\\\\\n           build-essential \\\\\\n           ca-certificates \\\\\\n           curl \\\\\\n           libopengl0 \\\\\\n           libxi6 \\\\\\n           meshlab \\\\\\n    && rm -rf /var/lib/apt/lists/*" \
+        "command": "apt-get update -qq \\\\\\n    && apt-get install -y -q --no-install-recommends \\\\\\n           build-essential \\\\\\n           ca-certificates \\\\\\n           curl \\\\\\n           libglib2.0-0 \\\\\\n           libglu1-mesa \\\\\\n           libopengl0 \\\\\\n           libxi6 \\\\\\n           libxrender1 \\\\\\n    && rm -rf /var/lib/apt/lists/*" \
       } \
     }, \
     { \
@@ -126,6 +135,24 @@ RUN printf '{ \
       "name": "run", \
       "kwds": { \
         "command": "blender --version" \
+      } \
+    }, \
+    { \
+      "name": "run", \
+      "kwds": { \
+        "command": "mkdir -p /opt/meshlab\\n\\tcurl -fL https://github.com/cnr-isti-vclab/meshlab/releases/download/MeshLab-2022.02/MeshLab2022.02d-linux.tar.gz | tar -xz -C /opt/meshlab" \
+      } \
+    }, \
+    { \
+      "name": "env", \
+      "kwds": { \
+        "PATH": "/opt/meshlab/usr/bin:$PATH" \
+      } \
+    }, \
+    { \
+      "name": "run", \
+      "kwds": { \
+        "command": "meshlab --version" \
       } \
     }, \
     { \
@@ -178,7 +205,13 @@ RUN printf '{ \
     { \
       "name": "run", \
       "kwds": { \
-        "command": "python -c '"'"'import cortex'"'"'" \
+        "command": "python -c '"'"'import cortex; print\(cortex.__version__\)'"'"'" \
+      } \
+    }, \
+    { \
+      "name": "run", \
+      "kwds": { \
+        "command": "python -c '"'"'import pymeshlab'"'"'" \
       } \
     }, \
     { \
