@@ -1,5 +1,5 @@
 numpy
 scipy
-sklearn<=0.21.3
+sklearn
 autograd
 plyfile
