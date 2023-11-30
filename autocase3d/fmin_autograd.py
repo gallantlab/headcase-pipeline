@@ -1,10 +1,14 @@
-import autograd.numpy as np
-from autograd import grad, elementwise_grad
-from autograd.numpy import sin, cos
-import scipy.optimize
+import os
 
-from .util import get_ply_features
+import autograd.numpy as np
+import scipy.optimize
+from autograd import elementwise_grad, grad
+from autograd.numpy import cos, sin
+from sklearn.mixture import GaussianMixture
+
 from . import squash_features, unsquash_xyz
+from .util import get_ply_features
+
 
 def rot3(ph, th, ps):
     return np.array([[cos(th)*cos(ps), -cos(ph)*sin(ps) + sin(ph)*sin(th)*cos(ps), sin(ph)*sin(ps) + cos(ph)*sin(th)*cos(ps)],
@@ -101,10 +105,22 @@ def _compute_log_det_cholesky(matrix_chol, covariance_type, n_features):
     return log_det_chol
 
 
+def _load_gmm_model():
+    """Load GMM model by loading the parameters and instatiating a GMM object."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    model_file = os.path.join(here, "gmm_params.npz")
+    params = np.load(model_file)
+    means, stds = params["means"], params["stds"]
+    gmm = GaussianMixture()
+    for key, param in params.items():
+        if "gmm" in key:
+            attr = key.replace("gmm_", "")
+            setattr(gmm, attr, param)
+    return gmm, means, stds
 
-def fit_xfm_autograd(infile, modelfile, **fmin_kwargs):
+def fit_xfm_autograd(infile, **fmin_kwargs):
     new_features, new_polys = get_ply_features(infile)
-    gmm, means, stds = np.load(modelfile, encoding="bytes", allow_pickle=True)
+    gmm, means, stds = _load_gmm_model()
 
     sq_new_features = squash_features(new_features, means, stds)
 
