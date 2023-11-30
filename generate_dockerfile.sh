@@ -2,9 +2,14 @@
 # Use neurodocker to generate a dockerfile
 docker run --rm repronim/neurodocker:latest generate docker \
 	--pkg-manager apt \
-	--base-image ubuntu:bionic \
+	--base-image ubuntu:20.04 \
+	--env "DEBIAN_FRONTEND=noninteractive" \
 	--run "chmod 777 /tmp" \
-	--install libopengl0 build-essential meshlab blender=2.79.b+dfsg0-1ubuntu1.18.04.1 \
+	--install libopengl0 build-essential meshlab curl ca-certificates libxi6 \
+	--run "mkdir -p /opt/blender
+	curl -fL https://download.blender.org/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2 | tar -xj -C /opt/blender --strip-components 1" \
+	--env "PATH=/opt/blender:\$PATH" \
+	--run "blender --version" \
 	--env SKLEARN_NO_OPENMP=1 \
 	--copy . "/headcase-pipeline" \
 	--miniconda \
