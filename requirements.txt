@@ -1,7 +1,8 @@
 pycortex
-pymeshlab
+pymeshlab<=2022.2.post2
 plyfile
 autograd
 numpy
-scipy<1.8.0
-scikit-learn<=0.21.3
+scipy
+scikit-learn
+cython<3.0
