@@ -149,7 +149,7 @@ def model_clean(infile, outfile):
         infile = os.path.join(path, "Model.obj")
     else:
         infile = os.path.abspath(infile)
-    ms = pymeshlab.MeshSet()
+    ms = pymeshlab.MeshSet(verbose=True)
     ms.load_new_mesh(infile)
 
     PYMESHLAB_VERSION = pymeshlab_version()
