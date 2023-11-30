@@ -39,7 +39,7 @@ In this case, the intermediate files will be stored in the working directory and
 - `01cleaned.ply` for the cleaned head model, and 
 - `02aligned.stl` for the aligned head model
 
-To manually refine the alignement, `02aligned.stl` can be loaded in blender with the desired headcase model (stored under the `stls` directory of this repository).
+To manually refine the alignment, `02aligned.stl` can be loaded in blender with the desired headcase model (stored under the `stls` directory of this repository).
 Finally, the headcase can be generated with
 
 ```bash
