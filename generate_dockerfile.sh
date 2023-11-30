@@ -1,16 +1,16 @@
+#!/bin/bash 
 # Use neurodocker to generate a dockerfile
 docker run --rm repronim/neurodocker:latest generate docker \
 	--pkg-manager apt \
-	--base ubuntu:bionic \
+	--base-image ubuntu:bionic \
+	--run "chmod 777 /tmp" \
 	--install libopengl0 build-essential meshlab blender=2.79.b+dfsg0-1ubuntu1.18.04.1 \
 	--env SKLEARN_NO_OPENMP=1 \
 	--copy . "/headcase-pipeline" \
 	--miniconda \
-	use_env=base \
-	activate=True \
-	conda_install="python=3 numpy scipy cython" \
+	version=latest \
+	conda_install="python=3.9 numpy scipy cython<3.0" \
 	pip_install="-r /headcase-pipeline/requirements.txt" \
-	--run "pip install --upgrade numpy" \
 	--run "useradd -m -s /bin/bash -G users headcase" \
 	--env HOME=/home/headcase \
 	--run "mkdir /home/headcase/.config" \
