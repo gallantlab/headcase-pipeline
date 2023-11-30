@@ -36,7 +36,7 @@ Once you have a good scan, send the file to an email you can access.
 1. Create an [Ultimaker account](https://ultimaker.com/software/ultimaker-cura) and ask a senior lab member to add you to the Gallant Lab group. 
 2. Download the [Ultimaker Cura software](https://ultimaker.com/software/ultimaker-cura) and sign in to your account.
 3. Upload both the front and back headcase stl files. Rotate and set the front to x=70mm. Set the back to x=-70mm. The two should be touching.
-4. In the `PREPARE` page, select the correct filament type and set the folloing print settings:
+4. In the `PREPARE` page, select the correct filament type and set the following print settings:
     - Profiles
       - Default = 0.2
       - Visual = 0.15
