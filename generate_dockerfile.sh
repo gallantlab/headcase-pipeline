@@ -17,7 +17,7 @@ docker run --rm repronim/neurodocker:latest generate docker \
 	--env SKLEARN_NO_OPENMP=1 \
 	--copy . "/headcase-pipeline" \
 	--miniconda \
-	version=latest \
+	version="py39_24.1.2-0" \
 	conda_install="python=3.9 gxx_linux-64" \
 	pip_install="-r /headcase-pipeline/requirements.txt" \
 	--run "useradd -m -s /bin/bash -G users headcase" \
