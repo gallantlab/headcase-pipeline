@@ -40,7 +40,7 @@ bpy.ops.object.modifier_add(type='DISPLACE')
 bpy.data.objects['scan'].modifiers['Displace'].name = 'shrinking'
 bpy.data.objects['scan'].modifiers['shrinking'].direction = 'NORMAL'
 bpy.data.objects['scan'].modifiers['shrinking'].mid_level = 0
-bpy.data.objects['scan'].modifiers['shrinking'].strength = 0.1
+bpy.data.objects['scan'].modifiers['shrinking'].strength = {shrinking_factor}
 
 try:
     readstl('{customizations}', 'customizations')

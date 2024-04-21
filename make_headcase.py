@@ -1,4 +1,5 @@
 """Generate an MRI-compatible headcase from a 3D head model acquired with a Structure Sensor."""
+
 import argparse
 import os
 import shlex
@@ -173,7 +174,9 @@ def align_scan(infile, outfile):
     formats.write_stl(outfile, new_pts, new_polys)
 
 
-def gen_case(scanfile, outfile, casetype="s32", nparts=4):
+def gen_case(
+    scanfile, outfile, workdir=None, casetype="s32", nparts=4, expand_head_model=0.1
+):
     cwd, _ = os.path.split(__file__)
     customizations = os.path.join(cwd, "stls", "default_customizations.stl")
     casefile = dict(
@@ -181,14 +184,19 @@ def gen_case(scanfile, outfile, casetype="s32", nparts=4):
     )
     casefile = os.path.join(cwd, "stls", casefile[casetype])
 
-    tempdir = mkdtemp()
+    cleanup = False
+    if workdir is None:
+        workdir = mkdtemp()
+        cleanup = True
+
     _call_blender(
         blender_carve_model_template.format(
             preview=casefile,
             scan=scanfile,
             customizations=customizations,
-            tempdir=tempdir,
+            tempdir=workdir,
             nparts=nparts,
+            shrinking_factor=expand_head_model,
         )
     )
 
@@ -198,9 +206,10 @@ def gen_case(scanfile, outfile, casetype="s32", nparts=4):
     }
     with zipfile.ZipFile(outfile, mode="w") as pkg:
         for fn in pieces[nparts]:
-            pkg.write(os.path.join(tempdir, fn), fn)
+            pkg.write(os.path.join(workdir, fn), fn)
 
-    shutil.rmtree(tempdir)
+    if cleanup:
+        shutil.rmtree(workdir)
 
 
 def pymeshlab_version():
@@ -230,7 +239,7 @@ def pipeline(infile, outfile, casetype="s32", nparts=4, workdir=None):
     print("Aligning head model")
     align_scan(cleaned, aligned)
     print("Making head case")
-    gen_case(aligned, outfile, casetype=casetype, nparts=nparts)
+    gen_case(aligned, outfile, working_dir, casetype=casetype, nparts=nparts)
 
     if workdir is None:
         shutil.rmtree(working_dir)
@@ -249,6 +258,15 @@ if __name__ == "__main__":
         "outfile",
         type=str,
         help="output headcase model (*.zip)",
+    )
+    parser.add_argument(
+        "--expand-head-model",
+        type=float,
+        default="0.1",
+        help="Expand the head model by this amount (in mm) before generating the "
+        "headcase. The default (0.1 mm) should work for most cases. If the resulting "
+        "headcase is too tight, one can try increasing this value. It is not "
+        "recommended to pass a value greater than 1 mm.",
     )
     parser.add_argument(
         "--headcoil",
