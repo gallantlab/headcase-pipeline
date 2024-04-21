@@ -268,16 +268,17 @@ def gen_case(
         workdir = mkdtemp()
         cleanup = True
 
-    _call_blender(
-        blender_carve_model_template.format(
-            preview=casefile,
-            scan=scanfile,
-            customizations=customizations,
-            tempdir=workdir,
-            nparts=nparts,
-            shrinking_factor=expand_head_model,
-        )
+    blender_params = dict(
+        preview=casefile,
+        scan=scanfile,
+        customizations=customizations,
+        tempdir=workdir,
+        nparts=nparts,
+        shrinking_factor=expand_head_model,
     )
+    print("Generating head model by calling Blender with the following parameters:")
+    print(blender_params)
+    _call_blender(blender_carve_model_template.format(**blender_params))
 
     pieces = {
         2: ["back.stl", "front.stl"],
