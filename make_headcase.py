@@ -459,6 +459,7 @@ if __name__ == "__main__":
             outfile,
             casetype=casetype,
             nparts=nparts,
+            workdir=workdir,
             customizations=customizations,
         )
     else:
