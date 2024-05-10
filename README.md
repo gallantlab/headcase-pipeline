@@ -65,8 +65,30 @@ docker run --rm caseforge:latest --help
 To let docker see the folder containing the head 3D model, you will have to bind the folder inside the container. For example, if the head model is in `/tmp/test-headcase/model.zip`, the following command should be run
 
 ```bash
-docker run -v /tmp:/tmp -t --rm caseforge:latest /tmp/test-headcase/model.zip /tmp/test-headcase/case.zip
+docker run --user=$(id -u):$(id -g) -v /tmp:/tmp -t --rm caseforge:latest \
+  /tmp/test-headcase/model.zip \
+  /tmp/test-headcase/case.zip
 ```
+
+Note that the flag `--user=$(id -u):$(id -g)` is optional, and it is used to ensure that the generated zip file will have the same file ownership and permissions as your user (rather than the root user).
+
+
+### Running with Docker on an ARM system (Mac M1/M2/M3)
+
+To run the pipeline on an ARM system such as a Mac with M1/M2/M3 chip, you need to pass the `--platform linux/amd64` flag to all docker calls (see this [stackoverflow question](https://stackoverflow.com/questions/71040681/qemu-x86-64-could-not-open-lib64-ld-linux-x86-64-so-2-no-such-file-or-direc)). 
+
+To build the docker image, run
+
+```bash
+docker build --platform linux/amd64 --tag caseforge .
+```
+
+To run the pipeline, use
+
+```bash
+docker run --platform linux/amd64 --rm caseforge:latest --help
+```
+
 
 ## Manual installation
 
