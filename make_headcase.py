@@ -225,7 +225,7 @@ def gen_case(
     casetype="s32",
     nparts=4,
     customizations=DEFAULT_CUSTOMIZATIONS,
-    expand_head_model=.1):
+    expand_head_model=0.1):
     """
     Generate a headcase.
 
@@ -312,7 +312,7 @@ def pipeline(
     nparts=4,
     workdir=None,
     customizations=DEFAULT_CUSTOMIZATIONS,
-    expand_head_model=.1,
+    expand_head_model=0.1,
 ):
     """
     Run the pipeline to generate a head case from a head model.
