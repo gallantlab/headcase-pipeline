@@ -221,12 +221,11 @@ def align_scan(infile, outfile):
 def gen_case(
     scanfile,
     outfile,
-    expand_head_model,
     workdir=None,
     casetype="s32",
     nparts=4,
     customizations=DEFAULT_CUSTOMIZATIONS,
-):
+    expand_head_model=.1):
     """
     Generate a headcase.
 
@@ -267,7 +266,7 @@ def gen_case(
     if workdir is None:
         workdir = mkdtemp()
         cleanup = True
-    print(expand_head_model)
+
     blender_params = dict(
         preview=casefile,
         scan=scanfile,
@@ -367,11 +366,11 @@ def pipeline(
     gen_case(
         aligned,
         outfile,
-        expand_head_model,
         working_dir,
         casetype=casetype,
         nparts=nparts,
         customizations=customizations,
+        expand_head_model=expand_head_model
     )
 
     if workdir is None:
@@ -462,7 +461,7 @@ if __name__ == "__main__":
         gen_case(
             infile,
             outfile,
-            expand_head_model,
+            expand_head_model=expand_head_model,
             casetype=casetype,
             nparts=nparts,
             customizations=customizations,
