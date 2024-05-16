@@ -392,17 +392,6 @@ if __name__ == "__main__":
         help="output headcase model (*.zip)",
     )
     parser.add_argument(
-        "--expand-head-model",
-        type=float,
-        default=0.1,
-        help="Expand the head model by this amount (in mm) before generating the "
-        "headcase. The default (0.1 mm) should work for most cases. If the resulting "
-        "headcase is too tight, one can try increasing this value. If the resulting "
-        "headcase is too loose, one can try passing a negative value to shrink the head"
-        "model. It is not recommended to pass a value greater than 1 mm or less than "
-        "-1 mm.",
-    )
-    parser.add_argument(
         "--headcoil",
         "-c",
         type=str,
@@ -422,6 +411,18 @@ if __name__ == "__main__":
         "less support material when 3d printing the headcase.",
     )
     parser.add_argument(
+        "--workdir",
+        type=str,
+        required=False,
+        default=None,
+        help="Working directory to use. If this flag is not used, "
+        "then a temporary directory is created and deleted at the end. "
+        "If this flag is used, the intermediate models are stored "
+        "in the working directory and not deleted. "
+        "This option is useful for manual tuning of the alignment, "
+        "in combination with the flag --generated-headcase-only",
+    )
+    parser.add_argument(
         "--generate-headcase-only",
         action="store_true",
         help="Only generate the headcase given the input stl file. This assumes that "
@@ -437,16 +438,15 @@ if __name__ == "__main__":
         f"to fine-tune the headcase. The default file is {DEFAULT_CUSTOMIZATIONS}",
     )
     parser.add_argument(
-        "--workdir",
-        type=str,
-        required=False,
-        default=None,
-        help="Working directory to use. If this flag is not used, "
-        "then a temporary directory is created and deleted at the end. "
-        "If this flag is used, the intermediate models are stored "
-        "in the working directory and not deleted. "
-        "This option is useful for manual tuning of the alignment, "
-        "in combination with the flag --generated-headcase-only",
+        "--expand-head-model",
+        type=float,
+        default=0.1,
+        help="Expand the head model by this amount (in mm) before generating the "
+        "headcase. The default (0.1 mm) should work for most cases. If the resulting "
+        "headcase is too tight, one can try increasing this value. If the resulting "
+        "headcase is too loose, one can try passing a negative value to shrink the head"
+        "model. It is not recommended to pass a value greater than 1 mm or less than "
+        "-1 mm.",
     )
     args = parser.parse_args()
     infile = os.path.abspath(args.infile)
@@ -463,18 +463,19 @@ if __name__ == "__main__":
         gen_case(
             infile,
             outfile,
-            expand_head_model=expand_head_model,
             casetype=casetype,
             nparts=nparts,
+            workdir=workdir,
             customizations=customizations,
+            expand_head_model=expand_head_model,
         )
     else:
         pipeline(
             infile,
             outfile,
-            expand_head_model=expand_head_model,
             casetype=casetype,
             nparts=nparts,
             workdir=workdir,
             customizations=customizations,
+            expand_head_model=expand_head_model,
         )
