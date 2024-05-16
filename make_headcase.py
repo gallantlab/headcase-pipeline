@@ -224,9 +224,8 @@ def gen_case(
     workdir=None,
     casetype="s32",
     nparts=4,
-    expand_head_model=0.1,
     customizations=DEFAULT_CUSTOMIZATIONS,
-):
+    expand_head_model=0.1):
     """
     Generate a headcase.
 
@@ -246,11 +245,11 @@ def gen_case(
     nparts : int, optional
         Number of parts to divide the head case into. Possible values are 2 or 4.
         Default is 4.
-    expand_head_model : float, optional
-        Factor (in mm) to expand the head model by. Default is 0.1.
     customizations : str, optional
         Path to the customizations file to remove additional parts from the headcase.
         Default is `default_customizations.stl` in the `stls` folder.
+    expand_head_model : float, optional
+        Factor (in mm) to expand the head model by. Default is 0.1.
 
     Examples
     --------
@@ -313,6 +312,7 @@ def pipeline(
     nparts=4,
     workdir=None,
     customizations=DEFAULT_CUSTOMIZATIONS,
+    expand_head_model=0.1,
 ):
     """
     Run the pipeline to generate a head case from a head model.
@@ -333,6 +333,8 @@ def pipeline(
         Path to the working directory, default is None.
     customizations : dict, optional
         Customizations for the head case, default is `default_customizations.stl`.
+    expand_head_model : float, optional
+        Factor (in mm) to expand the head model by, default is 0.1.
 
     Notes
     -----
@@ -368,6 +370,7 @@ def pipeline(
         casetype=casetype,
         nparts=nparts,
         customizations=customizations,
+        expand_head_model=expand_head_model
     )
 
     if workdir is None:
@@ -389,15 +392,6 @@ if __name__ == "__main__":
         help="output headcase model (*.zip)",
     )
     parser.add_argument(
-        "--expand-head-model",
-        type=float,
-        default="0.1",
-        help="Expand the head model by this amount (in mm) before generating the "
-        "headcase. The default (0.1 mm) should work for most cases. If the resulting "
-        "headcase is too tight, one can try increasing this value. It is not "
-        "recommended to pass a value greater than 1 mm.",
-    )
-    parser.add_argument(
         "--headcoil",
         "-c",
         type=str,
@@ -417,6 +411,18 @@ if __name__ == "__main__":
         "less support material when 3d printing the headcase.",
     )
     parser.add_argument(
+        "--workdir",
+        type=str,
+        required=False,
+        default=None,
+        help="Working directory to use. If this flag is not used, "
+        "then a temporary directory is created and deleted at the end. "
+        "If this flag is used, the intermediate models are stored "
+        "in the working directory and not deleted. "
+        "This option is useful for manual tuning of the alignment, "
+        "in combination with the flag --generated-headcase-only",
+    )
+    parser.add_argument(
         "--generate-headcase-only",
         action="store_true",
         help="Only generate the headcase given the input stl file. This assumes that "
@@ -432,16 +438,15 @@ if __name__ == "__main__":
         f"to fine-tune the headcase. The default file is {DEFAULT_CUSTOMIZATIONS}",
     )
     parser.add_argument(
-        "--workdir",
-        type=str,
-        required=False,
-        default=None,
-        help="Working directory to use. If this flag is not used, "
-        "then a temporary directory is created and deleted at the end. "
-        "If this flag is used, the intermediate models are stored "
-        "in the working directory and not deleted. "
-        "This option is useful for manual tuning of the alignment, "
-        "in combination with the flag --generated-headcase-only",
+        "--expand-head-model",
+        type=float,
+        default=0.1,
+        help="Expand the head model by this amount (in mm) before generating the "
+        "headcase. The default (0.1 mm) should work for most cases. If the resulting "
+        "headcase is too tight, one can try increasing this value. If the resulting "
+        "headcase is too loose, one can try passing a negative value to shrink the head"
+        "model. It is not recommended to pass a value greater than 1 mm or less than "
+        "-1 mm.",
     )
     args = parser.parse_args()
     infile = os.path.abspath(args.infile)
@@ -451,6 +456,7 @@ if __name__ == "__main__":
     workdir = args.workdir
     customizations = args.customizations_file
     generate_headcase_only = args.generate_headcase_only
+    expand_head_model = args.expand_head_model
 
     if generate_headcase_only:
         print("Making head case")
@@ -461,6 +467,7 @@ if __name__ == "__main__":
             nparts=nparts,
             workdir=workdir,
             customizations=customizations,
+            expand_head_model=expand_head_model,
         )
     else:
         pipeline(
@@ -470,4 +477,5 @@ if __name__ == "__main__":
             nparts=nparts,
             workdir=workdir,
             customizations=customizations,
+            expand_head_model=expand_head_model,
         )

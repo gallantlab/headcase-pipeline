@@ -5,6 +5,7 @@ __pycache__/
 *.obj
 *.ply
 *.mlx
+*.stl
 
 # temp folder
 temp/
